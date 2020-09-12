@@ -24,10 +24,19 @@ public class RequestUpdate {
     public List<KatalogNovel> getKatalog(@PathVariable("userID") String userID){
 
         UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-LIST/update/users/"+userID,UserKatalog.class);//w inf zwrotnej mam obiekt UserKatalog class
-
+        System.out.println(userKatalog);
         return userKatalog.getNovels().stream().map(novelka -> {//problem w konstukcji url//Już działa
-            NovelChap novelChap = restTemplate.getForObject( "http://NOVELUPD-SCRAPER/scrape/" +novelka.getNovelID(),NovelChap.class);
-            return new KatalogNovel(novelChap.getChapNum() , novelChap.getChapLink(),novelka.getNovelID());
+            if (novelka.getStrona().equals("NovelUpdates") ){//getnovelID jest OK a getStrona jest null
+                NovelChap novelChap = restTemplate.getForObject( "http://NOVELUPD-SCRAPER/scrape/" +novelka.getNovelID(),NovelChap.class);
+                return new KatalogNovel(novelChap.getChapNum() , novelChap.getChapLink(),novelka.getNovelID());
+            }
+            else if (novelka.getStrona().equals("ScribbleHub")){
+                NovelChap novelChap = restTemplate.getForObject( "http://TUTAJ SCAPER SCRIBBLE/scrape/" +novelka.getNovelID(),NovelChap.class);
+                return new KatalogNovel(novelChap.getChapNum() , novelChap.getChapLink(),novelka.getNovelID());
+            }
+            else {
+                return new KatalogNovel("ERROR" , "NIEPOPRAWNA","STRONA");
+            }
         }).collect(Collectors.toList());
 
     }

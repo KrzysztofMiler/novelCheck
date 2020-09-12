@@ -17,13 +17,13 @@ public class UpdateList {
     @RequestMapping("/users/{userID}")
     public UserKatalog getUserKatalog(@PathVariable("userID") String userID){//kiedyś będzie to mieć wpływ
     List<KatalogUpdate> katalog = Arrays.asList(
-            new KatalogUpdate("the-second-coming-of-gluttony"),
-            new KatalogUpdate("second-life-ranker"),
-            new KatalogUpdate("overgeared")
+            new KatalogUpdate("the-second-coming-of-gluttony","NovelUpdates"),
+            new KatalogUpdate("second-life-ranker","NovelUpdates"),
+            new KatalogUpdate("overgeared","NovelUpdates")
     );
         UserKatalog userKatalog = new UserKatalog();
         userKatalog.setNovels(katalog);
-        return userKatalog;
+        return userKatalog;//
     }
 
 
