@@ -3,13 +3,23 @@ package com.novelCheck.requestupdate.models;
 public class KatalogNovel {
     private String chapNum;
     private String chapLink;
+    private String tytul;
 
-    public KatalogNovel(String chapNum, String chapLink) {
+    public KatalogNovel(String chapNum, String chapLink, String tytul) {
         this.chapNum = chapNum;
         this.chapLink = chapLink;
+        this.tytul = tytul;
     }
 
     public KatalogNovel() {
+    }
+
+    public String getTytul() {
+        return tytul;
+    }
+
+    public void setTytul(String tytul) {
+        this.tytul = tytul;
     }
 
     public String getChapNum() {
