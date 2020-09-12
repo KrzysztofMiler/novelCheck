@@ -3,6 +3,7 @@ package com.novelCheck.scraper.resources;
 import com.novelCheck.scraper.model.NovelChap;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,19 +15,20 @@ import java.io.IOException;
 @RequestMapping("/scrape")
 public class NovelScrapper {
 
-    @RequestMapping("/{seriaNazwa}")
-    public NovelChap getNewChapScrape(@PathVariable("seriaNazwa") String seriaNazwa) {
+    @RequestMapping("/{seriaID}/{seriaNazwa}")
+    public NovelChap getNewChapScrape(@PathVariable("seriaNazwa") String seriaNazwa,@PathVariable("seriaID") String seriaID) {
         Document doc = null;
 
-        try {
-            doc = Jsoup.connect("https://www.novelupdates.com/series/"+seriaNazwa).get();
-            Elements content = doc.getElementsByClass("chp-release");//znajduje chaptery
-
-            return new NovelChap(content.attr("title"),content.attr("href"));
+        try {//+seriaID+"/"+seriaNazwa
+            doc = Jsoup.connect("https://www.scribblehub.com/series/"+seriaID+"/"+seriaNazwa).get();//TODO rozdzielić id serii z jej nazwą
+            Elements content = doc.getElementsByClass("toc_w");//znajduje chaptery ostatni
+            Elements link = doc.getElementsByClass("toc_a");//może jest lepszy sposób
+            Element tytul = content.select("a").first();
+            return new NovelChap(content.attr("order"),link.attr("href"),tytul.text());
 
         } catch (IOException ex) {
             ex.printStackTrace();
-            return new NovelChap("error","error");
+            return new NovelChap("error","error","error");
         }
 
 

@@ -19,7 +19,8 @@ public class UpdateList {
     List<KatalogUpdate> katalog = Arrays.asList(
             new KatalogUpdate("the-second-coming-of-gluttony","NovelUpdates"),
             new KatalogUpdate("second-life-ranker","NovelUpdates"),
-            new KatalogUpdate("overgeared","NovelUpdates")
+            new KatalogUpdate("overgeared","NovelUpdates"),
+            new KatalogUpdate("41306/he-who-fights-with-monsters", "ScribbleHub")
     );
         UserKatalog userKatalog = new UserKatalog();
         userKatalog.setNovels(katalog);

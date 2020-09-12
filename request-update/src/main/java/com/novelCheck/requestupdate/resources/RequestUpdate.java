@@ -31,8 +31,10 @@ public class RequestUpdate {
                 return new KatalogNovel(novelChap.getChapNum() , novelChap.getChapLink(),novelka.getNovelID());
             }
             else if (novelka.getStrona().equals("ScribbleHub")){
-                NovelChap novelChap = restTemplate.getForObject( "http://TUTAJ SCAPER SCRIBBLE/scrape/" +novelka.getNovelID(),NovelChap.class);
-                return new KatalogNovel(novelChap.getChapNum() , novelChap.getChapLink(),novelka.getNovelID());
+                NovelChap novelChap = restTemplate.getForObject( "http://SCRIBBLEHUB-SCRAPER/scrape/" +novelka.getNovelID(),NovelChap.class);
+                String[] part = novelka.getNovelID().split("/");
+                String tytul = part[1];
+                return new KatalogNovel(novelChap.getChapNum() , novelChap.getChapLink(),tytul);
             }
             else {
                 return new KatalogNovel("ERROR" , "NIEPOPRAWNA","STRONA");
