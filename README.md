@@ -1,6 +1,6 @@
 # novelCheck
  
- Miroserwis mający na celu sprawdzenie najnowszych wydanych rozdziałów lightnovel.
+ Miroserwis mający na celu sprawdzenie najnowszych wydanych rozdziałów lightnovel z wykorzystamiem Eureka Server i REST dzięki czemu użytkownik kontaktuje się z wyłącznie z mikorserwisem request-update
  
  Wpisując http://localhost:8081/request/{ID} uzysujemy informację zwrotną w posiatci najnowszych wydanych rozdziałów.
  
