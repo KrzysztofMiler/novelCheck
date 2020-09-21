@@ -4,10 +4,11 @@ import java.util.List;
 
 public class UserKatalog {
     private List<KatalogUpdate> novels;
+    //private KatalogUpdate novels;
     private String strona;
 
     public UserKatalog(List<KatalogUpdate> novels, String strona) {
-        this.novels = novels;
+        this.novels = (List<KatalogUpdate>) novels;
         this.strona = strona;
     }
 
@@ -24,10 +25,10 @@ public class UserKatalog {
 
 
     public List<KatalogUpdate> getNovels() {
-        return novels;
+        return (List<KatalogUpdate>) novels;
     }
 
     public void setNovels(List<KatalogUpdate> novels) {
-        this.novels = novels;
+        this.novels = (List<KatalogUpdate>) novels;
     }
 }

@@ -3,8 +3,8 @@ package com.novelCheck.updatedbH2.resources;
 
 import com.novelCheck.updatedbH2.model.KatalogUpdate;
 import com.novelCheck.updatedbH2.model.UserKatalog;
+import com.novelCheck.updatedbH2.repository.DbRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,14 +14,13 @@ import java.util.List;
 public class UpdateDBh2 {
 
         @Autowired
-        private CrudRepository repository;
-
+        private DbRepo repository;
 
         @GetMapping("/getAll")
         public UserKatalog getAll(){
             //repository.findAll();
             UserKatalog userKatalog = new UserKatalog();
-            userKatalog.setNovels((List<KatalogUpdate>) repository.findAll());
+            userKatalog.setNovels((List<KatalogUpdate>)repository.findAll());
             return userKatalog;
         }
         @PostMapping("/saveNovel")
@@ -29,10 +28,12 @@ public class UpdateDBh2 {
             repository.save(katalogUpdate);
             return "zaposano";//do testu
         }
-//        @GetMapping("/getNovel/{novelID}")
- //       public List<KatalogUpdate> getNovel(@PathVariable("novelID") String novelID){
-  //          return repository.findBynovelID(novelID);
-   //     }
+        @GetMapping("/getNovel/{novelID}")
+        public KatalogUpdate getNovel(@PathVariable("novelID") String novelID){//jak narazie jest katalog update co najwyżej potem zmienie
+
+            return repository.findByNovelID(novelID);
+
+        }
         //public void demo (DbRepo repo){
 //            return (args -> {
 //                repo.save(new KatalogUpdate("the-second-coming-of-gluttony","NovelUpdates"));

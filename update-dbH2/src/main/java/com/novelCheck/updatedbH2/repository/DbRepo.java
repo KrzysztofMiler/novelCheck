@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface DbRepo extends JpaRepository<KatalogUpdate, Long> {
 
-    List<KatalogUpdate> findByNovelID (String novelID);
-    List<KatalogUpdate> findBynovelID(String novelID);
-    KatalogUpdate findByID (long ID);
+    KatalogUpdate findByNovelID (String novelID);
+    //KatalogUpdate findByID (long ID);//zbyteczne
 }
