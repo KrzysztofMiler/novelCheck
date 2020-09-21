@@ -21,6 +21,9 @@ public class UpdateDbH2Application {
     CommandLineRunner run(CrudRepository repository){
 	    return args -> {
             repository.save(new KatalogUpdate("the-second-coming-of-gluttony","NovelUpdates"));
-        };
+            repository.save(new KatalogUpdate("second-life-ranker","NovelUpdates"));
+			repository.save(new KatalogUpdate("overgeared","NovelUpdates"));
+			repository.save(new KatalogUpdate("41306/he-who-fights-with-monsters", "ScribbleHub"));
+        };//trzeba będzie chyba zmienić co do ost rekordu
     }
 }
