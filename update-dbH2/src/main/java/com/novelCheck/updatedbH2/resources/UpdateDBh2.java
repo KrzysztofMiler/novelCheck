@@ -2,9 +2,8 @@ package com.novelCheck.updatedbH2.resources;
 
 
 import com.novelCheck.updatedbH2.model.KatalogUpdate;
-import com.novelCheck.updatedbH2.repository.DbRepo;
+import com.novelCheck.updatedbH2.model.UserKatalog;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +18,11 @@ public class UpdateDBh2 {
 
 
         @GetMapping("/getAll")
-        public List<KatalogUpdate> getAll(){
-            return (List<KatalogUpdate>) repository.findAll();
+        public UserKatalog getAll(){
+            //repository.findAll();
+            UserKatalog userKatalog = new UserKatalog();
+            userKatalog.setNovels((List<KatalogUpdate>) repository.findAll());
+            return userKatalog;
         }
         @PostMapping("/saveNovel")
         public String saveNovel(@RequestBody KatalogUpdate katalogUpdate){
