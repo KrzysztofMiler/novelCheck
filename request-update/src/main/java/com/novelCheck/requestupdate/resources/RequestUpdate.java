@@ -23,7 +23,8 @@ public class RequestUpdate {
     @RequestMapping("/{userID}")
     public List<KatalogNovel> getKatalog(@PathVariable("userID") String userID){
 
-        UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-LIST/update/users/"+userID,UserKatalog.class);//w inf zwrotnej mam obiekt UserKatalog class
+        //UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-LIST/update/users/"+userID,UserKatalog.class);//w inf zwrotnej mam obiekt UserKatalog class
+        UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getAll",UserKatalog.class);
         System.out.println(userKatalog);
         return userKatalog.getNovels().stream().map(novelka -> {//problem w konstukcji url//Już działa
             if (novelka.getStrona().equals("NovelUpdates") ){//getnovelID jest OK a getStrona jest null
