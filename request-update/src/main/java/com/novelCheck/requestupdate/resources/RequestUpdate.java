@@ -53,7 +53,7 @@ public class RequestUpdate {
         UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getNovel/"+novelID, UserKatalog.class);
         return update(userKatalog);
     }
-    @GetMapping("/getStrona/{strona}")
+    @GetMapping("getStrona/{strona}")
     public List<KatalogNovel> getStronaKatalog(@PathVariable("strona") String strona) {
         //System.out.println("http://UPDATE-DBH2/db/getNovel/"+novelID);
         UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getStrona/"+strona, UserKatalog.class);
