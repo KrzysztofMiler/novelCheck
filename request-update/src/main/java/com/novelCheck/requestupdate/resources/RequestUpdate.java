@@ -63,20 +63,19 @@ public class RequestUpdate {
         System.out.println(userKatalog.getNovels().toString());//puste
         return update(userKatalog);//nwyraźniej nie dostaje info
     }
-    @PostMapping("/saveNovel")//@PathVariable("strona") String strona,@PathVariable("novelID") String novelID
-    public void postNovel() throws JSONException {
+    @PostMapping("/saveNovel/{strona}/{novelID}")//
+    public void postNovel(@PathVariable("strona") String strona,@PathVariable("novelID") String novelID) throws JSONException {
         //chce zpostować KatalogUpdate
         HttpHeaders headers = new HttpHeaders();
 
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         JSONObject novelJsonObject = new JSONObject();
-        novelJsonObject.put("novelID","novelID");
-        novelJsonObject.put("strona","strona");
+        novelJsonObject.put("novelID",novelID);
+        novelJsonObject.put("strona",strona);
 
         HttpEntity<String> req = new HttpEntity<String>(novelJsonObject.toString(),headers);
         String novelJsonResult = restTemplate.postForObject("http://UPDATE-DBH2/db/saveNovel",req,String.class);
-        //UserKatalog userKatalog = restTemplate.postForObject("http://UPDATE-DBH2/db/saveNovel", ,UserKatalog.class);
 
     }
 }
