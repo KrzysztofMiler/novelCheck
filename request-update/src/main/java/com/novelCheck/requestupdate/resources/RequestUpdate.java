@@ -48,9 +48,16 @@ public class RequestUpdate {
 
     }
     @GetMapping("getNovel/{novelID}")
-    public List<KatalogNovel> getUserKatalog(@PathVariable("novelID") String novelID) {//problem w resttemp
-        System.out.println("http://UPDATE-DBH2/db/getNovel/"+novelID);
+    public List<KatalogNovel> getUserKatalog(@PathVariable("novelID") String novelID) {
+        //System.out.println("http://UPDATE-DBH2/db/getNovel/"+novelID);
         UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getNovel/"+novelID, UserKatalog.class);
         return update(userKatalog);
+    }
+    @GetMapping("/getStrona/{strona}")
+    public List<KatalogNovel> getStronaKatalog(@PathVariable("strona") String strona) {
+        //System.out.println("http://UPDATE-DBH2/db/getNovel/"+novelID);
+        UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getStrona/"+strona, UserKatalog.class);
+        System.out.println(userKatalog.getNovels().toString());//puste
+        return update(userKatalog);//nwyraźniej nie dostaje info
     }
 }
