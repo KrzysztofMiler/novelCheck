@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>novelCheck</title>
+</head>
+<body>
+    <h1> Elook</h1>
+    <h2>Novels</h2>
+            <table class="table">
+
+            <tr>
+                <th>Chap Num</th>
+                <th>Chap link</th>
+                <th>Novel ID</th>
+                <!-- tutaj popisze jakieś dod funkcje -->
+
+            </tr>
+            <tr th:each="novel :{$novels}">
+                <td th:text="${novel.novelID}">nama</td>
+                <td th:text="${novel.strona}">nama</td>
+
+            </tr>
+        </table>
+
+
+</body>
+</html>

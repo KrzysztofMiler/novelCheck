@@ -7,6 +7,7 @@ import com.novelCheck.updatedbH2.repository.DbRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -29,9 +30,12 @@ public class UpdateDBh2 {
             return "zaposano";//do testu
         }
         @GetMapping("/getNovel/{novelID}")
-        public KatalogUpdate getNovel(@PathVariable("novelID") String novelID){//jak narazie jest katalog update co najwyżej potem zmienie
-
-            return repository.findByNovelID(novelID);
+        public UserKatalog getNovel(@PathVariable("novelID") String novelID){
+            UserKatalog userKatalog = new UserKatalog();//działa ale głupio
+            KatalogUpdate update = repository.findByNovelID(novelID);
+            List<KatalogUpdate> katalogUpdatesList = Arrays.asList(new KatalogUpdate(update.getNovelID(),update.getStrona()));
+            userKatalog.setNovels(katalogUpdatesList);//tutaj nie można zcastować (List<KatalogUpdate>)
+            return userKatalog;
 
         }
         //public void demo (DbRepo repo){

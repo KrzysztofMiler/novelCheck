@@ -1,0 +1,23 @@
+<div class="container">
+        <table class="table">
+            <h2>Novels</h2>
+            <tr>
+                <th>Chap Num</th>
+                <th>Chap link</th>
+                <th>Novel ID</th>
+                <!-- tutaj popisze jakieś dod funkcje -->
+                public KatalogNovel(String chapNum, String chapLink, String tytul) {
+                this.chapNum = chapNum;
+                this.chapLink = chapLink;
+                this.tytul = tytul;
+                }
+
+            </tr>
+            <tr th:each="KatalogNovel : ${widgets}">
+                <td th:text="${KatalogNovel.tytul}">Tytuł</td>
+                <td th:text="${KatalogNovel.chapNum}">Nr ostatinego chapteru</td>
+                <td th:text="${KatalogNovel.chapLink}">Link do ost. chapteru</td>
+
+            </tr>
+        </table>
+    </div>
