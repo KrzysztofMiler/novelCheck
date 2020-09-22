@@ -24,7 +24,7 @@ public class UpdateDBh2 {
             userKatalog.setNovels((List<KatalogUpdate>)repository.findAll());
             return userKatalog;
         }
-        @PostMapping("/saveNovel")
+        @PostMapping(value = "/saveNovel",consumes = "application/json",produces = "application/json")
         public String saveNovel(@RequestBody KatalogUpdate katalogUpdate){
             repository.save(katalogUpdate);
             return "zaposano";//do testu

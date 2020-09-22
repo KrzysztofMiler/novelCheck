@@ -4,14 +4,17 @@ import com.novelCheck.requestupdate.models.KatalogNovel;
 import com.novelCheck.requestupdate.models.KatalogUpdate;
 import com.novelCheck.requestupdate.models.NovelChap;
 import com.novelCheck.requestupdate.models.UserKatalog;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 @RestController
@@ -59,5 +62,21 @@ public class RequestUpdate {
         UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getStrona/"+strona, UserKatalog.class);
         System.out.println(userKatalog.getNovels().toString());//puste
         return update(userKatalog);//nwyraźniej nie dostaje info
+    }
+    @PostMapping("/saveNovel")//@PathVariable("strona") String strona,@PathVariable("novelID") String novelID
+    public void postNovel() throws JSONException {
+        //chce zpostować KatalogUpdate
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        JSONObject novelJsonObject = new JSONObject();
+        novelJsonObject.put("novelID","novelID");
+        novelJsonObject.put("strona","strona");
+
+        HttpEntity<String> req = new HttpEntity<String>(novelJsonObject.toString(),headers);
+        String novelJsonResult = restTemplate.postForObject("http://UPDATE-DBH2/db/saveNovel",req,String.class);
+        //UserKatalog userKatalog = restTemplate.postForObject("http://UPDATE-DBH2/db/saveNovel", ,UserKatalog.class);
+
     }
 }
