@@ -31,20 +31,15 @@ public class UpdateDBh2 {
         }
         @GetMapping("/getNovel/{novelID}")
         public UserKatalog getNovel(@PathVariable("novelID") String novelID){
-            UserKatalog userKatalog = new UserKatalog();//działa ale głupio
-            KatalogUpdate update = repository.findByNovelID(novelID);
-            List<KatalogUpdate> katalogUpdatesList = Arrays.asList(new KatalogUpdate(update.getNovelID(),update.getStrona()));
-            userKatalog.setNovels(katalogUpdatesList);//tutaj nie można zcastować (List<KatalogUpdate>)
+            UserKatalog userKatalog = new UserKatalog();
+            userKatalog.setNovels(repository.findByNovelID(novelID));//tutaj nie można zcastować (List<KatalogUpdate>)
             return userKatalog;
-
         }
-        //public void demo (DbRepo repo){
-//            return (args -> {
-//                repo.save(new KatalogUpdate("the-second-coming-of-gluttony","NovelUpdates"));
-//                repo.save(new KatalogUpdate("the-second-coming-of-gluttony","NovelUpdates"));
-//                repo.save(new KatalogUpdate("the-second-coming-of-gluttony","NovelUpdates"));
-//                repo.save(new KatalogUpdate("the-second-coming-of-gluttony","NovelUpdates"));
-//            })
-        //}
+    @GetMapping("/getStrona/{strona}")
+        public UserKatalog getStrona(@PathVariable("strona") String strona){
+        UserKatalog userKatalog = new UserKatalog();//działa ale głupio
+        userKatalog.setNovels(repository.findByStrona(strona));
+        return userKatalog;
+    }
 }
 
