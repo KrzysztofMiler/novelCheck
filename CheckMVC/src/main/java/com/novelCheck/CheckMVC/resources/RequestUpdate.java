@@ -1,17 +1,16 @@
 package com.novelCheck.CheckMVC.resources;
 
 import com.novelCheck.CheckMVC.models.KatalogNovel;
-import com.novelCheck.CheckMVC.models.KatalogUpdate;
 import com.novelCheck.CheckMVC.models.NovelChap;
 import com.novelCheck.CheckMVC.models.UserKatalog;
 import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,13 +55,28 @@ public class RequestUpdate {
 
         UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getAll",UserKatalog.class);
         ModelAndView modelAndView = new ModelAndView("novels");
-
-
-
-
         modelAndView.addObject("katalog",update(userKatalog));
-        //modelAndView.setViewName("novels");
+
         return modelAndView;//do jakiego html idzie
     }
 
+
+    @GetMapping("getNovel/{novelID}")
+    public ModelAndView getUserKatalog(@PathVariable("novelID") String novelID) {
+        //System.out.println("http://UPDATE-DBH2/db/getNovel/"+novelID);
+        UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getNovel/"+novelID, UserKatalog.class);
+        ModelAndView modelAndView = new ModelAndView("novelka");
+        modelAndView.addObject("katalog",update(userKatalog));
+
+        return modelAndView;//do jakiego html idzie
+    }
+    @GetMapping("getStrona/{strona}")
+    public ModelAndView getStronaKatalog(@PathVariable("strona") String strona) {
+        //System.out.println("http://UPDATE-DBH2/db/getNovel/"+novelID);
+        UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getStrona/"+strona, UserKatalog.class);
+        ModelAndView modelAndView = new ModelAndView("strona");
+        modelAndView.addObject("katalog",update(userKatalog));
+
+        return modelAndView;//do jakiego html idzie
+    }
 }
