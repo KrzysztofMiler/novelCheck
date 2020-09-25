@@ -1,21 +1,26 @@
 package com.novelCheck.CheckMVC.resources;
 
 import com.novelCheck.CheckMVC.models.KatalogNovel;
+import com.novelCheck.CheckMVC.models.KatalogUpdate;
 import com.novelCheck.CheckMVC.models.NovelChap;
 import com.novelCheck.CheckMVC.models.UserKatalog;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-//@RestController
-@Controller//do usunięcia
+//@RestController//rest controller nie lub thymeleaf, sprawdzić rozwiązanie
+@Controller
 //@RequestMapping("/check")
 public class RequestUpdate {
 
@@ -40,28 +45,24 @@ public class RequestUpdate {
             }
         }).collect(Collectors.toList());
     }
-    /*
 
-    @GetMapping("/all")
-    public List<KatalogNovel> getKatalog(){
-        UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getAll",UserKatalog.class);
-        //UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-LIST/update/users/"+userID,UserKatalog.class);//w inf zwrotnej mam obiekt UserKatalog class
-        return update(userKatalog);
-
-    }*/
+    @RequestMapping("/index")
+    public String index(Model model){
+        return "index";//aby do index an poczoątek wchodziło
+    }
 
     @RequestMapping("/all")//zmienić na all
     public ModelAndView getKatalog(){
 
         UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getAll",UserKatalog.class);
-        ModelAndView modelAndView = new ModelAndView("novels");
+        ModelAndView modelAndView = new ModelAndView("all");
         modelAndView.addObject("katalog",update(userKatalog));
 
         return modelAndView;//do jakiego html idzie
     }
 
 
-    @GetMapping("getNovel/{novelID}")
+    @GetMapping("novelka")
     public ModelAndView getUserKatalog(@PathVariable("novelID") String novelID) {
         //System.out.println("http://UPDATE-DBH2/db/getNovel/"+novelID);
         UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getNovel/"+novelID, UserKatalog.class);
@@ -70,7 +71,7 @@ public class RequestUpdate {
 
         return modelAndView;//do jakiego html idzie
     }
-    @GetMapping("getStrona/{strona}")
+    @GetMapping("strona")
     public ModelAndView getStronaKatalog(@PathVariable("strona") String strona) {
         //System.out.println("http://UPDATE-DBH2/db/getNovel/"+novelID);
         UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getStrona/"+strona, UserKatalog.class);
@@ -78,5 +79,26 @@ public class RequestUpdate {
         modelAndView.addObject("katalog",update(userKatalog));
 
         return modelAndView;//do jakiego html idzie
+    }
+    @GetMapping("/newNovel")
+    public String postNovelForm(Model model){
+        model.addAttribute("newNovelForm",new KatalogUpdate());//nowy form na podstaiwe Kat, update
+        return "newNovelForm";
+    }
+
+    @PostMapping("/newNovel")//saveNovel/{strona}/{novelID}
+    public String postNovelResult(@ModelAttribute("newNovelForm") KatalogUpdate katalogUpdate) throws JSONException {
+        //chce zpostować KatalogUpdate                              //nw czy potrzebne jest Model model
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        JSONObject novelJsonObject = new JSONObject();
+        novelJsonObject.put("novelID",katalogUpdate.getNovelID());//to jest katalogUpdate
+        novelJsonObject.put("strona",katalogUpdate.getStrona());
+
+        HttpEntity<String> req = new HttpEntity<String>(novelJsonObject.toString(),headers);
+        String novelJsonResult = restTemplate.postForObject("http://UPDATE-DBH2/db/saveNovel",req,String.class);
+        return "newNovel";
     }
 }
