@@ -7,10 +7,28 @@
 <body>
     <h1>Tymczasowy form do przechodzneia  miezy html</h1>
 
-    <a href="/strona">Novelki z danej strony</a>
-    <a href="/all">Wszystkie novelki</a>
-    <a href="/novelka">Poj novelka</a>
-    <a href="/newNovel">DOdaj nową novelke</a>
+
+    <p>
+        <form th:action ="@{/strona}">Novelki z danej strony
+        <select th:name=strona>
+            <option value="NovelUpdates">NovelUpdates</option>
+            <option value="ScribbleHub">ScribbleHub</option>
+        </select>
+        <button type="submit" >sub</button>
+        </form>
+    </p>
+
+
+    <p>
+        <a href="/all">Wszystkie novelki</a>
+    </p>
+    <p>
+        <a href="/novelka">Poj novelka</a>
+    </p>
+    <p>
+        <a href="/newNovel">DOdaj nową novelke</a>
+    </p>
+
 
 </body>
 </html>

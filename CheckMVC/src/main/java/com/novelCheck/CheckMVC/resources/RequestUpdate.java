@@ -62,7 +62,7 @@ public class RequestUpdate {
     }
 
 
-    @GetMapping("novelka")
+    @GetMapping("/novelka")
     public ModelAndView getUserKatalog(@PathVariable("novelID") String novelID) {
         //System.out.println("http://UPDATE-DBH2/db/getNovel/"+novelID);
         UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getNovel/"+novelID, UserKatalog.class);
@@ -71,8 +71,8 @@ public class RequestUpdate {
 
         return modelAndView;//do jakiego html idzie
     }
-    @GetMapping("strona")
-    public ModelAndView getStronaKatalog(@PathVariable("strona") String strona) {
+    @GetMapping("/strona")
+    public ModelAndView getStronaKatalog(@RequestParam(value = "strona") String strona) {
         //System.out.println("http://UPDATE-DBH2/db/getNovel/"+novelID);
         UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getStrona/"+strona, UserKatalog.class);
         ModelAndView modelAndView = new ModelAndView("strona");
