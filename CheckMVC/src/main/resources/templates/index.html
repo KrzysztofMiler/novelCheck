@@ -22,11 +22,17 @@
     <p>
         <a href="/all">Wszystkie novelki</a>
     </p>
+
     <p>
-        <a href="/novelka">Poj novelka</a>
+        <form th:action ="@{/novelka}">Poj novelka
+            <input type="text" th:name="novelID"/>
+        <button type="submit " >sub</button>
+        </form>
+
     </p>
+
     <p>
-        <a href="/newNovel">DOdaj nową novelke</a>
+        <a href="/newNovel">Dodaj nową novelke</a>
     </p>
 
 

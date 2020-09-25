@@ -63,7 +63,7 @@ public class RequestUpdate {
 
 
     @GetMapping("/novelka")
-    public ModelAndView getUserKatalog(@PathVariable("novelID") String novelID) {
+    public ModelAndView getUserKatalog(@RequestParam("novelID") String novelID) {
         //System.out.println("http://UPDATE-DBH2/db/getNovel/"+novelID);
         UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getNovel/"+novelID, UserKatalog.class);
         ModelAndView modelAndView = new ModelAndView("novelka");
