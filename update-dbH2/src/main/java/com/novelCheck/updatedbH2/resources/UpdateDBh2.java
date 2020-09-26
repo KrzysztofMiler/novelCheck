@@ -3,6 +3,7 @@ package com.novelCheck.updatedbH2.resources;
 
 import com.novelCheck.updatedbH2.model.KatalogUpdate;
 import com.novelCheck.updatedbH2.model.UserKatalog;
+import com.novelCheck.updatedbH2.model.UserList;
 import com.novelCheck.updatedbH2.model.UserUser;
 import com.novelCheck.updatedbH2.repository.KatalogUpdateRepo;
 import com.novelCheck.updatedbH2.repository.UserUserRepo;
@@ -60,10 +61,12 @@ public class UpdateDBh2 {
             return userUser;//zwraca usrname+ email+ puste subnovel -  id null -  ale jesst jako objekt więc mogę zignorować narazie
         }
         @GetMapping("/getUserNovel/{username}")
-        public List<UserUser> getUserNovel(@PathVariable("username") String username){
+        public UserList getUserNovel(@PathVariable("username") String username){
             List<UserUser> userUser = new ArrayList<UserUser>();
-            userUserRepo.findByUserName(username).forEach(user -> userUser.add(user));//jak narzie zwraca wszysto o user + jego novelki
-            return userUser;
+
+            UserList userList = new UserList();
+            userList.setUserUser( userUserRepo.findByUserName(username));
+            return userList;
         }
 }
 

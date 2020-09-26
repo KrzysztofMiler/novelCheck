@@ -1,9 +1,6 @@
 package com.novelCheck.CheckMVC.resources;
 
-import com.novelCheck.CheckMVC.models.KatalogNovel;
-import com.novelCheck.CheckMVC.models.KatalogUpdate;
-import com.novelCheck.CheckMVC.models.NovelChap;
-import com.novelCheck.CheckMVC.models.UserKatalog;
+import com.novelCheck.CheckMVC.models.*;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -100,5 +97,19 @@ public class RequestUpdate {
         HttpEntity<String> req = new HttpEntity<String>(novelJsonObject.toString(),headers);
         String novelJsonResult = restTemplate.postForObject("http://UPDATE-DBH2/db/saveNovel",req,String.class);
         return "newNovel";
+    }
+
+    @GetMapping("/getUserNovel")
+    public ModelAndView getUserNovel(){//@RequestParam(value = "username")String username
+        String username = "asd";
+        UserList userList = restTemplate.getForObject("http://UPDATE-DBH2/db/getUserNovel/"+username,UserList.class);//tutaj problem
+        ModelAndView modelAndView = new ModelAndView("getUserNovel");
+
+        List<UserUser> userUsers = userList.getUserUser().stream().map(novelka -> {
+            return new UserUser(novelka.getUserName(),novelka.getEmail(),novelka.getSubNovel());
+        }).collect(Collectors.toList());//pawie ale zwraca referecnje
+        modelAndView.addObject("katalog",userUsers);
+        //modelAndView.addObject("katalog2",userUsers);
+        return modelAndView;//do jakiego html idzie
     }
 }

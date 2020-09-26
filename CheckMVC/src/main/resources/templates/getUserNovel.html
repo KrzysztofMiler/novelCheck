@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>novelCheck</title>
+</head>
+<body>
+    <h1>user nov</h1>
+
+
+
+    <table class="table">
+        <h2>Novels</h2>
+        <tr>
+            <th>Tytuł</th>
+            <th>Chapter</th>
+            <th>Chapter link</th>
+            <!-- tutaj popisze jakieś dod funkcje -->
+
+
+        </tr>
+        <tr th:each="UserUser : ${katalog}">
+        <td th:text="${UserUser.userName}">Tytuł</td>
+        <td th:text="${UserUser.email}">Nr ostatinego chapteru</td>
+        <td th:text="${UserUser.subNovel}">Link do ost. chapteru</td>
+
+
+        </tr>
+    </table>
+    <a href="/index">Powrót</a>
+</body>
+</html>
