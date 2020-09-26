@@ -35,6 +35,10 @@ public class UserUser {
         subNovel.add(katalogUpdate);
     }
 
+    public List<KatalogUpdate> getSubNovel() {
+        return subNovel;
+    }
+
     public UserUser() {
     }
 

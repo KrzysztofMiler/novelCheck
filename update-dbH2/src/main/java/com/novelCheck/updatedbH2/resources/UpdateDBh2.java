@@ -56,9 +56,14 @@ public class UpdateDBh2 {
         @GetMapping("/getUser/{username}")
         public List<UserUser> getUser(@PathVariable("username") String username){
             List<UserUser> userUser = new ArrayList<UserUser>();
-            userUserRepo.findByUserName(username).forEach(user -> userUser.add(user));
+            userUserRepo.findByUserName(username).forEach(user -> userUser.add(new UserUser(user.getUserName(),user.getEmail())));
+            return userUser;//zwraca usrname+ email+ puste subnovel -  id null -  ale jesst jako objekt więc mogę zignorować narazie
+        }
+        @GetMapping("/getUserNovel/{username}")
+        public List<UserUser> getUserNovel(@PathVariable("username") String username){
+            List<UserUser> userUser = new ArrayList<UserUser>();
+            userUserRepo.findByUserName(username).forEach(user -> userUser.add(user));//jak narzie zwraca wszysto o user + jego novelki
             return userUser;
         }
-
 }
 
