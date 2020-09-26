@@ -3,11 +3,10 @@ package com.novelCheck.updatedbH2.resources;
 
 import com.novelCheck.updatedbH2.model.KatalogUpdate;
 import com.novelCheck.updatedbH2.model.UserKatalog;
-import com.novelCheck.updatedbH2.repository.DbRepo;
+import com.novelCheck.updatedbH2.repository.KatalogUpdateRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -15,7 +14,7 @@ import java.util.List;
 public class UpdateDBh2 {
 
         @Autowired
-        private DbRepo repository;
+        private KatalogUpdateRepo repository;
 
         @GetMapping("/getAll")
         public UserKatalog getAll(){

@@ -1,19 +1,34 @@
 package com.novelCheck.updatedbH2.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Entity
+@Table(name = "KATALOGUPDATE")
 public class KatalogUpdate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long ID;
+
+    @Column(name = "NOVELID")
     private String novelID;
+
+    @Column(name = "STRONA")
     private String strona;
 
+    @ManyToMany(mappedBy = "subNovel")
+    private List<UserUser> subskrybenci = new ArrayList<>();
+
+//    @Column(name="SETUSER")
+//    @ManyToMany(mappedBy = "novelList")
+//    private Set<UserUser> setUser;
+
+    public void addSubskrybent(UserUser user){
+        subskrybenci.add(user);
+    }
 
     public KatalogUpdate() {
     }

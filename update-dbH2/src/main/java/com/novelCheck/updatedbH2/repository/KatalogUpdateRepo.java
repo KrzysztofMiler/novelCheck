@@ -5,7 +5,7 @@ import com.novelCheck.updatedbH2.model.KatalogUpdate;
 
 import java.util.List;
 
-public interface DbRepo extends CrudRepository<KatalogUpdate, Long> {
+public interface KatalogUpdateRepo extends CrudRepository<KatalogUpdate, Long> {
 
 
 
