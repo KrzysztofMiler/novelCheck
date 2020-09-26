@@ -20,13 +20,26 @@
 
         </tr>
         <tr th:each="UserUser : ${katalog}">
-        <td th:text="${UserUser.userName}">Tytuł</td>
-        <td th:text="${UserUser.email}">Nr ostatinego chapteru</td>
-        <td th:text="${UserUser.subNovel}">Link do ost. chapteru</td>
+            <td th:text="${UserUser.userName}">Tytuł</td>
+            <td th:text="${UserUser.email}">Nr ostatinego chapteru</td>
 
+            <p> </p>
+            <tr th:each="KatalogUpdate : ${katalog2}">
+                <td th:text="${KatalogUpdate.novelID}"></td>
+                <td th:text="${KatalogUpdate.strona}"></td>
 
+            </tr>
         </tr>
+
+
+
+
     </table>
     <a href="/index">Powrót</a>
 </body>
 </html>
+
+
+<!--
+
+     -->

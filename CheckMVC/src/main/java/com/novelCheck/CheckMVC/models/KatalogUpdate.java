@@ -1,5 +1,7 @@
 package com.novelCheck.CheckMVC.models;
 
+import java.util.List;
+
 public class KatalogUpdate {
     private String novelID;
     private String strona;//TODO zamienić na enum albo zrobić db
@@ -15,6 +17,7 @@ public class KatalogUpdate {
 
     public KatalogUpdate() {
     }
+
 
     public String getNovelID() {
         return novelID;

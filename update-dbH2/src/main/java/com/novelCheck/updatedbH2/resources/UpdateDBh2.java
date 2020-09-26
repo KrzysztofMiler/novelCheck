@@ -62,11 +62,9 @@ public class UpdateDBh2 {
         }
         @GetMapping("/getUserNovel/{username}")
         public UserList getUserNovel(@PathVariable("username") String username){
-            List<UserUser> userUser = new ArrayList<UserUser>();
-
             UserList userList = new UserList();
-            userList.setUserUser( userUserRepo.findByUserName(username));
-            return userList;
+            userList.setUserUser((List<UserUser>)userUserRepo.findByUserName(username));
+            return userList;//zwróciło inczaj niż wcześniej
         }
 }
 

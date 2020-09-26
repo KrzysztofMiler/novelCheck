@@ -1,5 +1,6 @@
 package com.novelCheck.CheckMVC.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserList {
@@ -16,6 +17,7 @@ public class UserList {
     }
 
     public UserList() {
+        userUser = new ArrayList<>();//tutaj chba magia jest
     }
 
 }

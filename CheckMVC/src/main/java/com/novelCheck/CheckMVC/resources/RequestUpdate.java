@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 //@RestController//rest controller nie lub thymeleaf, sprawdzić rozwiązanie
@@ -102,14 +105,25 @@ public class RequestUpdate {
     @GetMapping("/getUserNovel")
     public ModelAndView getUserNovel(){//@RequestParam(value = "username")String username
         String username = "asd";
-        UserList userList = restTemplate.getForObject("http://UPDATE-DBH2/db/getUserNovel/"+username,UserList.class);//tutaj problem
+        UserList userList =restTemplate.getForObject("http://UPDATE-DBH2/db/getUserNovel/"+username,UserList.class);//tutaj problem
+        // mam zwrapowane w liste
+        List<UserUser> users = userList.getUserUser().stream().map(novels ->
+        {
+            return new UserUser(novels.getUserName(),novels.getEmail(),novels.getSubNovel());
+        }).collect(Collectors.toList());//getSubNOvel zwraca mi objety a nie
+
+        UserUser user = (UserUser) users.get(0);//działa ale dalej list zwraca obiekty
+
+        List<KatalogUpdate> kat2 = user.getSubNovel().stream().map(novels ->{
+            return new KatalogUpdate(novels.getNovelID(),novels.getStrona());
+        }).collect(Collectors.toList());
+
+
         ModelAndView modelAndView = new ModelAndView("getUserNovel");
 
-        List<UserUser> userUsers = userList.getUserUser().stream().map(novelka -> {
-            return new UserUser(novelka.getUserName(),novelka.getEmail(),novelka.getSubNovel());
-        }).collect(Collectors.toList());//pawie ale zwraca referecnje
-        modelAndView.addObject("katalog",userUsers);
-        //modelAndView.addObject("katalog2",userUsers);
+        modelAndView.addObject("katalog",users);
+        modelAndView.addObject("katalog2",kat2);
+
         return modelAndView;//do jakiego html idzie
     }
 }

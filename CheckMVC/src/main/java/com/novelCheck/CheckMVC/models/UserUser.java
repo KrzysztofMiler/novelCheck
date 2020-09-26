@@ -23,6 +23,7 @@ public class UserUser {
         this.email = email;
     }
 
+
     public void subToNovel(KatalogUpdate katalogUpdate){
         subNovel.add(katalogUpdate);
     }
