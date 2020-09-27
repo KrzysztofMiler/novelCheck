@@ -29,7 +29,7 @@ public class UpdateDbH2Application {
 		UserUserRepo userUserRepo = configurableApplicationContext.getBean(UserUserRepo.class);
 
 
-		UserUser user1 = new UserUser("asd","asd@gmail.com");
+		UserUser user1 = new UserUser("asd","excellmeh@gmail.com");
 		UserUser user2 = new UserUser("asd2","asd2222@gmail.com");
 		UserUser user3 = new UserUser("asd3","asd333333@gmail.com");
 		List<UserUser> userList = Arrays.asList(user1,user2,user3);

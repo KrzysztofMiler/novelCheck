@@ -101,7 +101,7 @@ public class RequestUpdate {
         String novelJsonResult = restTemplate.postForObject("http://UPDATE-DBH2/db/saveNovel",req,String.class);
         return "newNovel";
     }
-
+    ////////////////////////////////// do odzyskiwania user z db
     @GetMapping("/getUserNovel")
     public ModelAndView getUserNovel(){//@RequestParam(value = "username")String username
         String username = "asd";
@@ -125,5 +125,38 @@ public class RequestUpdate {
         modelAndView.addObject("katalog2",kat2);
 
         return modelAndView;//do jakiego html idzie
+    }
+    //////////////////////////////////////////////do wysyłania mail
+    @GetMapping("/sendMailUser")
+    public String sendMailUser(Model model){
+        model.addAttribute("sendMailUser",new UserUser());//nowy form na podstaiwe useruser
+        return "sendMailUser";
+    }
+    @PostMapping("/sendMailUser")//saveNovel/{strona}/{novelID}
+    public String sendMailUser() throws JSONException {//pewnie trzeba będie param pozmieniać
+        //chce zpostować UserUser                              //nw czy potrzebne jest Model model
+
+        String username = "asd";//TODO zmienić z temp val
+        UserList userList =restTemplate.getForObject("http://UPDATE-DBH2/db/getUserNovel/"+username,UserList.class);//tutaj problem
+        // mam zwrapowane w liste
+        List<UserUser> users = userList.getUserUser().stream().map(novels ->
+        {
+            return new UserUser(novels.getUserName(),novels.getEmail(),novels.getSubNovel());
+        }).collect(Collectors.toList());//getSubNOvel zwraca mi objety a nie
+
+        UserUser user = (UserUser) users.get(0);//działa ale dalej list zwraca obiekty
+
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        JSONObject novelJsonObject = new JSONObject();
+        novelJsonObject.put("userName",user.getUserName());//to jest userUser
+        novelJsonObject.put("email",user.getEmail());
+        novelJsonObject.put("novelSub",user.getSubNovel());
+
+        HttpEntity<String> req = new HttpEntity<String>(novelJsonObject.toString(),headers);//TODO dodać dok url
+        String novelJsonResult = restTemplate.postForObject("http://NOVELMAIL/sendMailUser",req,String.class);//tutaj bugi
+        return "index";//                                   bez dok adresu po / działa
     }
 }

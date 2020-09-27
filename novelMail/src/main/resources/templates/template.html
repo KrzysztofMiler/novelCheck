@@ -5,7 +5,25 @@
     <title>Title</title>
 </head>
 <body>
+<tr>
+    <th>Tytuł</th>
+    <th>Chapter</th>
+    <th>Chapter link</th>
+    <!-- tutaj popisze jakieś dod funkcje -->
 
+
+</tr>
+<tr th:each="UserUser : ${userUser}">
+    <td th:text="${UserUser.userName}">Tytuł</td>
+    <td th:text="${UserUser.email}">Nr ostatinego chapteru</td>
+
+    <p> </p>
+<tr th:each="KatalogUpdate : ${katalog2}">
+    <td th:text="${KatalogUpdate.novelID}"></td>
+    <td th:text="${KatalogUpdate.strona}"></td>
+
+</tr>
+</tr>
 
 
 </body>
