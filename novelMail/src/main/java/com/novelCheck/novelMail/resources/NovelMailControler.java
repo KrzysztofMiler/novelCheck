@@ -23,11 +23,11 @@ public class NovelMailControler {
     @RequestMapping("/")
     public String send() {
         Context context = new Context();
-        context.setVariable("header", "Nowy artykuł na CodeCouple");
-        context.setVariable("title", "#8 Spring Boot – email - szablon i wysyłanie");
-        context.setVariable("description", "Tutaj jakis opis...");
+        context.setVariable("header", "asd");
+        context.setVariable("title", "#tytttytyt");
+        context.setVariable("description", "oppppp");
         String body = templateEngine.process("template", context);
-        emailSender.sendMail("excellmeh@gmail.com", "CodeCouple Newsletter", body);//tutaj błąd
+        emailSender.sendMail("excellmeh@gmail.com", "novelChek", body);//tutaj błąd
         return "index";
     }
 
