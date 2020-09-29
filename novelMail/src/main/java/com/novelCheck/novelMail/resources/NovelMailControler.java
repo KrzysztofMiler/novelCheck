@@ -1,13 +1,16 @@
 package com.novelCheck.novelMail.resources;
 
-import com.novelCheck.novelMail.model.KatalogUpdate;
-import com.novelCheck.novelMail.model.UserUser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.novelCheck.novelMail.model.*;
+import com.sun.mail.imap.protocol.UIDSet;
 import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -26,6 +29,9 @@ public class NovelMailControler {
 
     private final NovelMail emailSender;
     private final TemplateEngine templateEngine;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Autowired
     public NovelMailControler(NovelMail emailSender,
@@ -47,30 +53,52 @@ public class NovelMailControler {
         emailSender.sendMail("excellmeh@gmail.com", "novelChek", body);//tutaj błąd
         return "index";
     }
-    @PostMapping(value = "/sendMailUser",consumes = "application/json",produces = "application/json")
-    public String sendMailUser(@RequestBody UserUser userUser){
+    @GetMapping(value = "/sendMailUser/{userName}")
+    public String sendMailUser(@PathVariable("userName") String userName){
 
-        ///ModelAndView modelAndView = new ModelAndView("template");
+        UserList userList =restTemplate.getForObject("http://UPDATE-DBH2/db/getUserNovel/"+userName,UserList.class);//tutaj problem
+        // mam zwrapowane w liste
+        List<UserUser> users = userList.getUserUser().stream().map(novels ->
+        {
+            return new UserUser(novels.getUserName(),novels.getEmail(),novels.getSubNovel());
+        }).collect(Collectors.toList());//getSubNOvel zwraca mi objety a nie
+
+        UserUser user = (UserUser) users.get(0);//działa ale dalej list zwraca obiekty
+
+        List<KatalogUpdate> kat2 = user.getSubNovel().stream().map(novels ->{
+            return new KatalogUpdate(novels.getNovelID(),novels.getStrona());
+        }).collect(Collectors.toList());
+
+        List<KatalogNovel> katalogNovels = user.getSubNovel().stream().map(novelka -> {//problem w konstukcji url//Już działa
+            if (novelka.getStrona().equals("NovelUpdates") ){//getnovelID jest OK a getStrona jest null
+                NovelChap novelChap = restTemplate.getForObject( "http://NOVELUPD-SCRAPER/scrape/" +novelka.getNovelID(),NovelChap.class);
+                return new KatalogNovel(novelChap.getChapNum() , novelChap.getChapLink(),novelka.getNovelID());
+            }
+            else if (novelka.getStrona().equals("ScribbleHub")){
+                NovelChap novelChap = restTemplate.getForObject( "http://SCRIBBLEHUB-SCRAPER/scrape/" +novelka.getNovelID(),NovelChap.class);
+                String[] part = novelka.getNovelID().split("/");
+                String tytul = part[1];
+                return new KatalogNovel(novelChap.getChapNum() , novelChap.getChapLink(),tytul);
+            }
+            else {
+                return new KatalogNovel("ERROR" , "NIEPOPRAWNA","STRONA");
+            }
+        }).collect(Collectors.toList());
+
         Context context = new Context();//te poniżej są do thymeleaf do umiesczania
         context.setVariable("header", "asd");
-        context.setVariable("title", "#tytttytyt"+userUser.getUserName());
-        context.setVariable("description", "oppppp"+userUser.getUserName());
+        //context.setVariable("title", "#tytttytyt"+userKatalogWrapper.getUserUser().getUserName());
+        context.setVariable("description", "oppppp"+userName);
 
+        //System.out.println(userUser.getSubNovel().toString());//zwraca null czyli nie prekazuje listy
 
-//        List<KatalogUpdate> kat2 = userUser.getSubNovel().stream().map(novels ->{//tutaj mam null pointer
-//            return new KatalogUpdate(novels.getNovelID(),novels.getStrona());
-//        }).collect(Collectors.toList());
+        System.out.println(userName);
 
-        context.setVariable("userUser",userUser);
-//        context.setVariable("katalog2",kat2);
-
-//        modelAndView.addObject("userUser",userUser);//powinno wszystko do temp dodać
-//        modelAndView.addObject("katalog2",kat2);
         String body = templateEngine.process("template", context);//niechce poprawnie html słać
         LocalDateTime dateTime = LocalDateTime.now();//
 
 
-        emailSender.sendMail(userUser.getEmail(), "novelChek " + dateTime, body);//tutaj był body z temEngnie
+        //emailSender.sendMail(userUser.getEmail(), "novelChek " + dateTime, body);//tutaj był body z temEngnie
         return "index";
     }
 }

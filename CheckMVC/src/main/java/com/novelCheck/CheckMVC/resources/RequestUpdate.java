@@ -1,6 +1,8 @@
 package com.novelCheck.CheckMVC.resources;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.novelCheck.CheckMVC.models.*;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -137,26 +139,32 @@ public class RequestUpdate {
         //chce zpostować UserUser                              //nw czy potrzebne jest Model model
 
         String username = "asd";//TODO zmienić z temp val
-        UserList userList =restTemplate.getForObject("http://UPDATE-DBH2/db/getUserNovel/"+username,UserList.class);//tutaj problem
-        // mam zwrapowane w liste
-        List<UserUser> users = userList.getUserUser().stream().map(novels ->
-        {
-            return new UserUser(novels.getUserName(),novels.getEmail(),novels.getSubNovel());
-        }).collect(Collectors.toList());//getSubNOvel zwraca mi objety a nie
-
-        UserUser user = (UserUser) users.get(0);//działa ale dalej list zwraca obiekty
-
-        HttpHeaders headers = new HttpHeaders();
-
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        JSONObject novelJsonObject = new JSONObject();
-        novelJsonObject.put("userName",user.getUserName());//to jest userUser
-        novelJsonObject.put("email",user.getEmail());
-        novelJsonObject.put("novelSub",user.getSubNovel());
-
-        HttpEntity<String> req = new HttpEntity<String>(novelJsonObject.toString(),headers);//TODO dodać dok url
-        String novelJsonResult = restTemplate.postForObject("http://NOVELMAIL/sendMailUser",req,String.class);//tutaj bugi
+//        UserList userList =restTemplate.getForObject("http://UPDATE-DBH2/db/getUserNovel/"+username,UserList.class);//tutaj problem
+//        // mam zwrapowane w liste
+//        List<UserUser> users = userList.getUserUser().stream().map(novels ->
+//        {
+//            return new UserUser(novels.getUserName(),novels.getEmail(),novels.getSubNovel());
+//        }).collect(Collectors.toList());//getSubNOvel zwraca mi objety a nie
+//
+//        UserUser user = (UserUser) users.get(0);//działa ale dalej list zwraca obiekty
+//
+////        List<KatalogUpdate> kat2 = user.getSubNovel().stream().map(novels ->{
+////            return new KatalogUpdate(novels.getNovelID(),novels.getStrona());
+////        }).collect(Collectors.toList());
+////
+//        JSONObject userJsonObject = new JSONObject();
+//        userJsonObject.put("userName",user.getUserName());
+//        userJsonObject.put("email",user.getEmail());
+//        HttpHeaders headers = new HttpHeaders();
+//        //headers.setAccept(acceptableMediaTypes);
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//
+//
+//        HttpEntity<String> entity = new HttpEntity<String>(userJsonObject.toString(), headers);//TODO dodać dok url//normalnie był tu string.class
+//        //bez string nie działa
+        System.out.println("http://NOVELMAIL/sendMailUser/"+username);
+        String novelJsonResult = restTemplate.getForObject("http://NOVELMAIL/sendMailUser/"+username,String.class);//tutaj bugi
         return "index";//                                   bez dok adresu po / działa
     }
 }
