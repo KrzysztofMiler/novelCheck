@@ -185,4 +185,27 @@ public class RequestUpdate {
     }
 
     //dodawanie novelki do user
+    @GetMapping("/subNoveltoUser")
+    public String postNoveltoUserForm(Model model){
+        model.addAttribute("Wrapper",new SubUserToNovelWrapper());//sprawdzić czy da się mniej dodać
+        //                  alternatywnie dodać weryfikacje przez e-mail????
+        //model.addAttribute("NovelName",new KatalogUpdate());//jak wyzej
+        return "newNoveltoUserForm";
+    }
+    @PostMapping("/subNoveltoUser")//temp
+    public String NoveltoUserFormResult(@ModelAttribute("Wrapper") SubUserToNovelWrapper wrapper) throws JSONException {
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        JSONObject novelJsonObject = new JSONObject();
+        novelJsonObject.put("userName",wrapper.getUserName());//to jest katalogUpdate
+        novelJsonObject.put("novelID",wrapper.getNovelID());
+
+        HttpEntity<String> req = new HttpEntity<String>(novelJsonObject.toString(),headers);
+        String novelJsonResult = restTemplate.postForObject("http://UPDATE-DBH2/db/subNoveltoUser",req,String.class);
+
+
+        return "index";//z jakiegoś powodu nie widzi newNoveltoUser
+    }
 }

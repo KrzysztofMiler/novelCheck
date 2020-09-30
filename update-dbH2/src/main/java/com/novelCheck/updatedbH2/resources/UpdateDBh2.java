@@ -1,10 +1,7 @@
 package com.novelCheck.updatedbH2.resources;
 
 
-import com.novelCheck.updatedbH2.model.KatalogUpdate;
-import com.novelCheck.updatedbH2.model.UserKatalog;
-import com.novelCheck.updatedbH2.model.UserList;
-import com.novelCheck.updatedbH2.model.UserUser;
+import com.novelCheck.updatedbH2.model.*;
 import com.novelCheck.updatedbH2.repository.KatalogUpdateRepo;
 import com.novelCheck.updatedbH2.repository.UserUserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,14 +77,14 @@ public class UpdateDBh2 {
             return "zaposano";//do testu
         }
 
-        @PostMapping(value = "/subNoveltoUser/{userName}/{novelName}")
-        public String subNoveltoUser(@PathVariable("userName") String userName,@PathVariable("novelName") String novelName){
+        @PostMapping(value = "/subNoveltoUser",consumes = "application/json",produces = "application/json")
+        public String subNoveltoUser(@RequestBody SubUserToNovelWrapper novelWrapper){
 
-            UserUser userUser = userUserRepo.findOneByUserName(userName);//powinno 1 zwracać
+            UserUser userUser = userUserRepo.findOneByUserName(novelWrapper.getUserName());//powinno 1 zwracać
             System.out.println(userUser.getEmail());//test
 
 
-            KatalogUpdate katalogUpdate = katalogUpdateRepo.findOneByNovelID(novelName);//powino 1 barc
+            KatalogUpdate katalogUpdate = katalogUpdateRepo.findOneByNovelID(novelWrapper.getNovelID());//powino 1 barc
 
             userUser.subToNovel(katalogUpdate);
 
