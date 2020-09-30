@@ -1,18 +1,34 @@
 # novelCheck
  
- Miroserwis mający na celu sprawdzenie najnowszych wydanych rozdziałów lightnovel z wykorzystamiem Eureka Server i REST dzięki czemu użytkownik kontaktuje się z wyłącznie z mikorserwisem request-update
+ #### Miroserwis mający na celu sprawdzenie najnowszych wydanych rozdziałów lightnovel z wykorzystamiem architektury micorservices w Java Spring.
  
- Wpisując http://localhost:8081/request/{ID} uzysujemy informację zwrotną w posiatci najnowszych wydanych rozdziałów.
+ ### Przedstawienie aktualnej (1/10/20) struktury serwisu
+ ![Opis architektury](https://i.imgur.com/UMmtmih.png)
  
- eureka-server pozwala na odkrywanie mikroserwisów bez znajomości ich portu
+### Wpisując http://localhost:8080/index przechodzimy do strony pozwalającej na wykorzystywanie wszystkich funkcji serwisu.
  
- request-update zajmuje się odpytaniem scraperów zgodnie z listą zawartą w update-List i zwrócemiem informacji od webscapperów
+#### Wykorzystane technologie i techniki:
  
- update-List zawiera w sobie listę novelek
+ * Architektura microservices
+ * Spring Boot Web/MVC/Data do stworzenia praktycznie całego projektu
+ * Discovery service za pomocą EurekaServer
+ * Komunikacja poprzez REST
+ * Webscraping za pomocą Jsoup
+ * Thymeleaf do komunikacji z użytkownikiem
+ * JavaMail do komunikacji przez e-mail
  
- scraper-novelup scraper przeznaczony od wydobywania informaji z witryny NovelUpdates
+#### Krótki opis poszczególnych elementów:
  
- scraper-scribblehub scraper przeznaony do wydobywania informacj z witryny ScribbeHub
+ eureka-server pozwala na odkrywanie mikroserwisów bez znajomości ich portu 
+
+ scraper-novelup scraper przeznaczony od wydobywania informacji z witryny NovelUpdates, oparty o Jsoup.
  
- TODO update-db
+ scraper-scribblehub scraper przeznaony do wydobywania informacji z witryny ScribbeHub, oparty o Jsoup.
  
+ update-dbH2 serwis przeznaczony do zarządzania bazą danych, włącznie z wpisywaaniem i pobiieraniem danych.
+ 
+ CheckMVC serwis przeznaczony do komunikacji z użytkownikiem, wysyła zapytania od pozostałych elementów, odbierając od nich dane lub wysyłając im je.
+ 
+ novelMail serwis przeznaczony do wysyłki powiadomień przez e-mail dotyczących nowych wydań w novelach które użytkownik zasubskrybował
+ 
+ Serwisy request-update,update-db,update-List są serwisami stworzonymi podaczas developmentu, są nieużywane przez program i aktualnie służą jedynie do testów.
