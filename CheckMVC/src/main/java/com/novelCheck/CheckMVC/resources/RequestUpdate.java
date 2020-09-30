@@ -1,8 +1,6 @@
 package com.novelCheck.CheckMVC.resources;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.novelCheck.CheckMVC.models.*;
-import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -15,10 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 //@RestController//rest controller nie lub thymeleaf, sprawdzić rozwiązanie
@@ -167,4 +162,27 @@ public class RequestUpdate {
         String novelJsonResult = restTemplate.getForObject("http://NOVELMAIL/sendMailUser/"+username,String.class);//tutaj bugi
         return "index";//                                   bez dok adresu po / działa
     }
+
+    // dodawanie user i novel
+    @GetMapping("/addUser")
+    public String postAddUserForm(Model model){
+        model.addAttribute("newUserForm",new UserUser());//nowy form na podstaiwe useruser
+        return "newUserForm";
+    }
+    @PostMapping("/addUser")//temp
+    public String AddUserFormResult(@ModelAttribute("newUserForm") UserUser userUser) throws JSONException {
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        JSONObject novelJsonObject = new JSONObject();
+        novelJsonObject.put("userName",userUser.getUserName());//to jest katalogUpdate
+        novelJsonObject.put("email",userUser.getEmail());
+
+        HttpEntity<String> req = new HttpEntity<String>(novelJsonObject.toString(),headers);
+        String novelJsonResult = restTemplate.postForObject("http://UPDATE-DBH2/db/addUser",req,String.class);
+        return "newUser";
+    }
+
+    //dodawanie novelki do user
 }

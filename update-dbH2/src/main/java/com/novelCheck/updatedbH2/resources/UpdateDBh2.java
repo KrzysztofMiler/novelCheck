@@ -67,25 +67,39 @@ public class UpdateDBh2 {
             return userList;//zwróciło inczaj niż wcześniej
         }
 
-        @GetMapping("/addUser")//temp
-        public void addUser(){
-            UserUser user = new UserUser("username","email");
+//        @GetMapping("/addUser")//temp
+//        public void addUser(){
+//            UserUser user = new UserUser("username","email");
+//
+//            userUserRepo.save(user);//powinno zapisać usera
+//        }
+        @PostMapping(value = "/addUser",consumes = "application/json",produces = "application/json")
+        public String addUser(@RequestBody UserUser userUser){
+            userUserRepo.save(userUser);
 
-            userUserRepo.save(user);//powinno zapisać usera
+            return "zaposano";//do testu
         }
-        @GetMapping("/subNoveltoUser")//temp
-        public void subNoveltoUser (){
-            String userName = "asd";
+
+        @PostMapping(value = "/subNoveltoUser/{userName}/{novelName}")
+        public String subNoveltoUser(@PathVariable("userName") String userName,@PathVariable("novelName") String novelName){
 
             UserUser userUser = userUserRepo.findOneByUserName(userName);//powinno 1 zwracać
             System.out.println(userUser.getEmail());//test
 
-            String novelName = "overgeared";
+
             KatalogUpdate katalogUpdate = katalogUpdateRepo.findOneByNovelID(novelName);//powino 1 barc
 
             userUser.subToNovel(katalogUpdate);
 
             userUserRepo.save(userUser);
+
+            return "zaposano";//do testu
         }
+//        @GetMapping("/subNoveltoUser")//temp
+//        public void subNoveltoUser (){
+//            String userName = "asd";
+//
+//
+//        }
 }
 

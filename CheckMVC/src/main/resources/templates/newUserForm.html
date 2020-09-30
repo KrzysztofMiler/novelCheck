@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>novelCheck</title>
+</head>
+<body>
+    <h1>newnovel form</h1>
+
+<form th:action="@{/addUser}" th:object="${newUserForm}" method="post">
+    <p>userName: <input type="text" th:field="*{userName}"/></p>
+    <p>email : <input type="text" th:field="*{email}"/></p>
+
+
+    <p ><input type="submit" value="Submit"/></p>
+</form>
+
+
+    <a href="/index">Powrót</a>
+</body>
+</html>
