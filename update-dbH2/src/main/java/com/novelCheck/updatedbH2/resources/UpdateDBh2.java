@@ -66,5 +66,26 @@ public class UpdateDBh2 {
             userList.setUserUser((List<UserUser>)userUserRepo.findByUserName(username));
             return userList;//zwróciło inczaj niż wcześniej
         }
+
+        @GetMapping("/addUser")//temp
+        public void addUser(){
+            UserUser user = new UserUser("username","email");
+
+            userUserRepo.save(user);//powinno zapisać usera
+        }
+        @GetMapping("/subNoveltoUser")//temp
+        public void subNoveltoUser (){
+            String userName = "asd";
+
+            UserUser userUser = userUserRepo.findOneByUserName(userName);//powinno 1 zwracać
+            System.out.println(userUser.getEmail());//test
+
+            String novelName = "overgeared";
+            KatalogUpdate katalogUpdate = katalogUpdateRepo.findOneByNovelID(novelName);//powino 1 barc
+
+            userUser.subToNovel(katalogUpdate);
+
+            userUserRepo.save(userUser);
+        }
 }
 

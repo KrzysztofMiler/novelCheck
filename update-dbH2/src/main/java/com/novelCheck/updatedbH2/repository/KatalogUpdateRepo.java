@@ -9,7 +9,7 @@ public interface KatalogUpdateRepo extends CrudRepository<KatalogUpdate, Long> {
 
 
 
-    //KatalogUpdate findByNovelID (String novelID);//tak uzyskam pojedyńczy wynik
+    KatalogUpdate findOneByNovelID (String novelID);//tak uzyskam pojedyńczy wynik
     List<KatalogUpdate> findByNovelID (String novelID);
 
     List<KatalogUpdate> findByStrona (String strona);//tak pare
