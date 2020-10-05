@@ -4,7 +4,10 @@ package com.novelCheck.updatedbH2.resources;
 import com.novelCheck.updatedbH2.model.*;
 import com.novelCheck.updatedbH2.repository.KatalogUpdateRepo;
 import com.novelCheck.updatedbH2.repository.UserUserRepo;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -19,6 +22,9 @@ public class UpdateDBh2 {
 
         @Autowired
         private UserUserRepo userUserRepo;
+
+        @Autowired
+        private SessionFactory sessionFactory;
 
         @GetMapping("/getAll")
         public UserKatalog getAll(){
@@ -44,7 +50,7 @@ public class UpdateDBh2 {
             userKatalog.setNovels(katalogUpdateRepo.findByStrona(strona));
             return userKatalog;
         }
-
+        //@Transactional//wywala coś z json że nie potrafi napisać
         @GetMapping("/getAllUsers")
         public List<UserUser> getAllUsers(){
             List<UserUser> userUser = new ArrayList<UserUser>();
@@ -91,6 +97,34 @@ public class UpdateDBh2 {
             userUserRepo.save(userUser);
 
             return "zaposano";//do testu
+        }
+        @Transactional
+        @GetMapping("/delSubNovel")//TODO na post mapping zmień
+        public String delSubNovel(@RequestBody SubUserToNovelWrapper novelWrapper){
+
+
+            UserUser userUser = userUserRepo.findOneByUserName(novelWrapper.getUserName());
+            KatalogUpdate katalogUpdate = katalogUpdateRepo.findOneByNovelID(novelWrapper.getNovelID());
+
+            Session session = sessionFactory.getCurrentSession();
+
+            UserUser user = (UserUser)session.get(UserUser.class,userUser.getID());//złe id ma być long
+
+            KatalogUpdate katalogUpdate1 = session.get(KatalogUpdate.class,katalogUpdate.getID());
+
+            user.getSubNovel().remove(katalogUpdate1);
+
+            session.update(user);
+
+            return"asd";
+        }
+        @PostMapping(value = "/updateUserMail")//zmienic na post
+        public void updateUserMail(@RequestBody UserUser userUser){//
+
+            UserUser userOld = userUserRepo.findOneByUserName(userUser.getUserName());
+            userOld.setEmail(userUser.getEmail());
+
+            userUserRepo.save(userOld);
         }
 //        @GetMapping("/subNoveltoUser")//temp
 //        public void subNoveltoUser (){

@@ -4,9 +4,11 @@ import com.novelCheck.updatedbH2.model.KatalogUpdate;
 import com.novelCheck.updatedbH2.model.UserUser;
 import com.novelCheck.updatedbH2.repository.KatalogUpdateRepo;
 import com.novelCheck.updatedbH2.repository.UserUserRepo;
+import org.hibernate.SessionFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -17,10 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 
 @EnableEurekaClient
-@SpringBootApplication
+@SpringBootApplication(exclude =  HibernateJpaAutoConfiguration.class)//czyżby magiczna klasa?
 public class UpdateDbH2Application {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 		ConfigurableApplicationContext configurableApplicationContext =
 			SpringApplication.run(UpdateDbH2Application.class, args);
 

@@ -1,5 +1,8 @@
 package com.novelCheck.updatedbH2.model;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +24,7 @@ public class UserUser {
 
     @Column(name = "SUBNOVEL")//jak narazie zrobimy bidirectional ale potem chyab unidir będzie lepiej
     @ManyToMany//chyba jest uni
+    @Fetch(FetchMode.JOIN)//powinno nie powodoćać bł z lazy join
     @JoinTable(name = "UserNovel",
             joinColumns = @JoinColumn(name = "user_id"),//owner
             inverseJoinColumns = @JoinColumn(name = "novel_id"))

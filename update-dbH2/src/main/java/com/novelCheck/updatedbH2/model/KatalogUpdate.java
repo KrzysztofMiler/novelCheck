@@ -1,5 +1,8 @@
 package com.novelCheck.updatedbH2.model;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +23,7 @@ public class KatalogUpdate {
     private String strona;
 
     @ManyToMany(mappedBy = "subNovel")
+    @Fetch(FetchMode.JOIN)//powinno nie powodoćać bł z lazy join
     private List<UserUser> subskrybenci = new ArrayList<>();
 
 //    @Column(name="SETUSER")
