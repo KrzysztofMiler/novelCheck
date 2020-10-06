@@ -8,6 +8,8 @@ import com.novelCheck.novelMail.model.*;
 import com.sun.mail.imap.protocol.UIDSet;
 import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 
 
 @Controller
+@EnableScheduling
 public class NovelMailControler {
 
     private final NovelMail emailSender;
@@ -100,5 +103,31 @@ public class NovelMailControler {
 
         //emailSender.sendMail(userUser.getEmail(), "novelChek " + dateTime, body);//tutaj był body z temEngnie
         return "index";
+    }
+
+    ////		sec  min  h  dzien mies ?dzienTyg? rok//* wszystkie ? jakikolwiek
+    @Scheduled(cron = "0 7 23 * * ?")//powinno o 20 codziennie wysyłać?
+    @GetMapping("/L")
+    public void periodSendMail(){
+
+        UserList userList = restTemplate.getForObject("http://UPDATE-DBH2/db/mailGetAll",UserList.class);
+
+        List<UserUser> userUsers = userList.getUserUser();
+
+        Context context = new Context();//te poniżej są do thymeleaf do umiesczania
+        //to będzie na wstępie
+        context.setVariable("header", "asd");
+        context.setVariable("title", "#tytttytyt");
+        context.setVariable("description", "oppppp");
+
+        String body = templateEngine.process("template", context);
+
+        userUsers.forEach(userUser -> {
+            emailSender.sendMail(userUser.getEmail(),"NovelCheck",body);
+            List<KatalogUpdate> katalogUpdates = userUser.getSubNovel();
+            
+            System.out.println(userUser.getEmail());//do testu
+        });
+        //System.out.println(userUser.toString());
     }
 }

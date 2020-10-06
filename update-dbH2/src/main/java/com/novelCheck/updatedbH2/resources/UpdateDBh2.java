@@ -52,7 +52,7 @@ public class UpdateDBh2 {
             userKatalog.setNovels(katalogUpdateRepo.findByStrona(strona));
             return userKatalog;
         }
-        //@Transactional//wywala coś z json że nie potrafi napisać
+
         @GetMapping("/getAllUsers")
         public List<UserUser> getAllUsers(){
             List<UserUser> userUser = new ArrayList<UserUser>();
@@ -152,6 +152,19 @@ public class UpdateDBh2 {
                 novel.zwróćSubskrybenci().remove(user);
             });
             session.delete(user);//ty robisz bajzel
+        }
+
+        @GetMapping("/mailGetAll")//TODO czy nie warto usunąć getAllUser????
+        public UserList mailGetAll(){
+
+//            List<UserUser> userUser = new ArrayList<UserUser>();
+//            userUserRepo.findAll().forEach(user -> userUser.add(user));//trochę bardziej mi się podoba
+//            return userUser;//działa ale zwraca lisę obj może będą z tym poblemy
+
+            UserList userList = new UserList();
+            userList.setUserUser((List<UserUser>)userUserRepo.findAll());
+            return userList;//zwróciło inczaj niż wcześniej
+
         }
 }
 
