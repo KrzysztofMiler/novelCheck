@@ -5,6 +5,7 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,11 +25,15 @@ public class KatalogUpdate {
 
     @ManyToMany(mappedBy = "subNovel")
     @Fetch(FetchMode.JOIN)//powinno nie powodoćać bł z lazy join
-    private List<UserUser> subskrybenci = new ArrayList<>();
+    private Set<UserUser> subskrybenci = new HashSet<>();
 
 //    @Column(name="SETUSER")
 //    @ManyToMany(mappedBy = "novelList")
 //    private Set<UserUser> setUser;
+
+//    public Set<UserUser> getSubskrybenci() {
+//        return subskrybenci;
+//    }
 
     public void addSubskrybent(UserUser user){
         subskrybenci.add(user);
@@ -40,6 +45,10 @@ public class KatalogUpdate {
     public KatalogUpdate(String novelID, String strona) {
         this.novelID = novelID;
         this.strona = strona;
+    }
+
+    public Set<UserUser> zwróćSubskrybenci() {//5iq aby nie brał w get all
+        return subskrybenci;
     }
 
     public String getNovelID() {

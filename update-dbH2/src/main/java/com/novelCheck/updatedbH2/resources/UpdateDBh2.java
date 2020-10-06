@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 //TODO zobaczyć czy @Service ma sens
@@ -25,6 +26,7 @@ public class UpdateDBh2 {
 
         @Autowired
         private SessionFactory sessionFactory;
+
 
         @GetMapping("/getAll")
         public UserKatalog getAll(){
@@ -100,8 +102,8 @@ public class UpdateDBh2 {
         }
         @Transactional
         @GetMapping("/delSubNovel")//TODO na post mapping zmień
-        public String delSubNovel(@RequestBody SubUserToNovelWrapper novelWrapper){
-
+        public String delSubNovel(){//@RequestBody SubUserToNovelWrapper novelWrapper
+            SubUserToNovelWrapper novelWrapper = new SubUserToNovelWrapper("asd","the-second-coming-of-gluttony");
 
             UserUser userUser = userUserRepo.findOneByUserName(novelWrapper.getUserName());
             KatalogUpdate katalogUpdate = katalogUpdateRepo.findOneByNovelID(novelWrapper.getNovelID());
@@ -118,6 +120,19 @@ public class UpdateDBh2 {
 
             return"asd";
         }
+        @Transactional
+        @GetMapping("/removeNovel")
+        public void removeNovel(){
+            Session session = sessionFactory.getCurrentSession();
+            KatalogUpdate katalogUpdate = katalogUpdateRepo.findOneByNovelID("the-second-coming-of-gluttony");
+            KatalogUpdate katalogUpdate1 = session.get(KatalogUpdate.class,katalogUpdate.getID());
+
+            katalogUpdate1.zwróćSubskrybenci().forEach(user ->{
+                user.getSubNovel().remove(katalogUpdate1);
+            });
+            session.delete(katalogUpdate1);//ty robisz bajzel
+
+        }
         @PostMapping(value = "/updateUserMail")//zmienic na post
         public void updateUserMail(@RequestBody UserUser userUser){//
 
@@ -126,11 +141,17 @@ public class UpdateDBh2 {
 
             userUserRepo.save(userOld);
         }
-//        @GetMapping("/subNoveltoUser")//temp
-//        public void subNoveltoUser (){
-//            String userName = "asd";
-//
-//
-//        }
+        @Transactional
+        @GetMapping("/removeUser")
+        public void removeUser(){
+            Session session = sessionFactory.getCurrentSession();
+            UserUser userUser = userUserRepo.findOneByUserName("asd");
+            UserUser user = session.get(UserUser.class,userUser.getID());
+
+            user.getSubNovel().forEach(novel ->{
+                novel.zwróćSubskrybenci().remove(user);
+            });
+            session.delete(user);//ty robisz bajzel
+        }
 }
 
