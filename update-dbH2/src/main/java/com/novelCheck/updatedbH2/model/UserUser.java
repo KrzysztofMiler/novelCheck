@@ -27,7 +27,7 @@ public class UserUser {
     @Column(name = "SUBNOVEL")//jak narazie zrobimy bidirectional ale potem chyab unidir będzie lepiej
     @ManyToMany//chyba jest uni
     @Fetch(FetchMode.JOIN)//powinno nie powodoćać bł z lazy join
-    @Cascade({org.hibernate.annotations.CascadeType.DETACH, org.hibernate.annotations.CascadeType.MERGE})
+    @Cascade({org.hibernate.annotations.CascadeType.DETACH, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     @JoinTable(name = "UserNovel",
             joinColumns = @JoinColumn(name = "user_id"),//owner
             inverseJoinColumns = @JoinColumn(name = "novel_id"))

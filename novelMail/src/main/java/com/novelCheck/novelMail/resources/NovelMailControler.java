@@ -125,7 +125,22 @@ public class NovelMailControler {
         userUsers.forEach(userUser -> {
             emailSender.sendMail(userUser.getEmail(),"NovelCheck",body);
             List<KatalogUpdate> katalogUpdates = userUser.getSubNovel();
-            
+            katalogUpdates.stream().map( katalogUpdate -> {
+                if (katalogUpdate.getStrona().equals("NovelUpdates") ){//getnovelID jest OK a getStrona jest null
+                    NovelChap novelChap = restTemplate.getForObject( "http://NOVELUPD-SCRAPER/scrape/" +katalogUpdate.getNovelID(),NovelChap.class);
+                    return new KatalogNovel(novelChap.getChapNum() , novelChap.getChapLink(),katalogUpdate.getNovelID());
+                    //TODO tutaj do thymeleaf umieszczam
+                }
+                else if (katalogUpdate.getStrona().equals("ScribbleHub")){
+                    NovelChap novelChap = restTemplate.getForObject( "http://SCRIBBLEHUB-SCRAPER/scrape/" +katalogUpdate.getNovelID(),NovelChap.class);
+                    String[] part = katalogUpdate.getNovelID().split("/");
+                    String tytul = part[1];
+                    return new KatalogNovel(novelChap.getChapNum() , novelChap.getChapLink(),tytul);
+                }
+                else {
+                    return new KatalogNovel("ERROR" , "NIEPOPRAWNA","STRONA");
+                }
+            });
             System.out.println(userUser.getEmail());//do testu
         });
         //System.out.println(userUser.toString());

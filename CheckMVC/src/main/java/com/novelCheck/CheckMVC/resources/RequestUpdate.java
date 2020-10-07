@@ -208,4 +208,43 @@ public class RequestUpdate {
 
         return "index";//z jakiegoś powodu nie widzi newNoveltoUser
     }
+    @GetMapping("/updateUserMail")
+    public String updateUserMail(Model model){
+        model.addAttribute("User",new UserUser());
+
+        return "updateUserMail";
+    }
+    @PostMapping("/updateUserMail")
+    public String updateUserMailPost(@ModelAttribute("User") UserUser user){
+
+        UserUser userUser = new UserUser(user.getUserName(),user.getEmail());//tbh nwm czemu to działa
+
+        restTemplate.postForObject("http://UPDATE-DBH2/db/updateUserMail",userUser,UserUser.class);
+
+        return "index";
+    }
+
+    @GetMapping("/delSubNovel")//TODO zrobić aby wyświetlało jakie są subskrybwane novelki
+    public String delSubNovel(Model model){
+        model.addAttribute("Wrapper",new SubUserToNovelWrapper());
+
+        return "delSubNovel";
+    }
+    @PostMapping(value = "/delSubNovel")
+    public String delSubNovelPost(@ModelAttribute("Wrapper") SubUserToNovelWrapper wrapper) throws JSONException {
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        JSONObject novelJsonObject = new JSONObject();
+        novelJsonObject.put("userName",wrapper.getUserName());//to jest katalogUpdate
+        novelJsonObject.put("novelID",wrapper.getNovelID());
+
+        HttpEntity<String> req = new HttpEntity<String>(novelJsonObject.toString(),headers);
+        String novelJsonResult = restTemplate.postForObject("http://UPDATE-DBH2/db/delSubNovel",req,String.class);
+
+
+        return "index";//z jakiegoś powodu nie widzi newNoveltoUser
+    }
+
 }

@@ -91,7 +91,7 @@ public class UpdateDBh2 {
             UserUser userUser = userUserRepo.findOneByUserName(novelWrapper.getUserName());//powinno 1 zwracać
             System.out.println(userUser.getEmail());//test
 
-
+            //TODO dodać wiadomość zwrotną jak nie znajdzie w db może opcja dopisywania do niej?
             KatalogUpdate katalogUpdate = katalogUpdateRepo.findOneByNovelID(novelWrapper.getNovelID());//powino 1 barc
 
             userUser.subToNovel(katalogUpdate);
@@ -100,11 +100,12 @@ public class UpdateDBh2 {
 
             return "zaposano";//do testu
         }
-        @Transactional
-        @GetMapping("/delSubNovel")//TODO na post mapping zmień
-        public String delSubNovel(){//@RequestBody SubUserToNovelWrapper novelWrapper
-            SubUserToNovelWrapper novelWrapper = new SubUserToNovelWrapper("asd","the-second-coming-of-gluttony");
+    @Transactional
+        @PostMapping(value = "/delSubNovel",consumes = "application/json",produces = "application/json")
+        public String delSubNovel(@RequestBody SubUserToNovelWrapper novelWrapper){//
+            //SubUserToNovelWrapper novelWrapper = new SubUserToNovelWrapper("asd","the-second-coming-of-gluttony");
 
+            //delSubNovelHelp(novelWrapper);
             UserUser userUser = userUserRepo.findOneByUserName(novelWrapper.getUserName());
             KatalogUpdate katalogUpdate = katalogUpdateRepo.findOneByNovelID(novelWrapper.getNovelID());
 
@@ -117,8 +118,11 @@ public class UpdateDBh2 {
             user.getSubNovel().remove(katalogUpdate1);
 
             session.update(user);
-
             return"asd";
+        }
+
+        private void delSubNovelHelp(SubUserToNovelWrapper novelWrapper){
+
         }
         @Transactional
         @GetMapping("/removeNovel")
