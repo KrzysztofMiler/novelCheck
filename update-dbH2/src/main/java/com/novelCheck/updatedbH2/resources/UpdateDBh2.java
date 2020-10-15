@@ -54,20 +54,20 @@ public class UpdateDBh2 {
 
         @GetMapping("/getAllUsers")
         public List<UserUser> getAllUsers(){
-            List<UserUser> userUser = new ArrayList<UserUser>();
-            userUserRepo.findAll().forEach(user -> userUser.add(user));//trochę bardziej mi się podoba
+            List<UserUser> userUser = new ArrayList<>();
+            userUserRepo.findAll().forEach(userUser::add);//trochę bardziej mi się podoba
             return userUser;//działa ale zwraca lisę obj może będą z tym poblemy
         }
         @GetMapping("/getUser/{username}")
         public List<UserUser> getUser(@PathVariable("username") String username){
-            List<UserUser> userUser = new ArrayList<UserUser>();
+            List<UserUser> userUser = new ArrayList<>();
             userUserRepo.findByUserName(username).forEach(user -> userUser.add(new UserUser(user.getUserName(),user.getEmail())));
             return userUser;//zwraca usrname+ email+ puste subnovel -  id null -  ale jesst jako objekt więc mogę zignorować narazie
         }
         @GetMapping("/getUserNovel/{username}")
         public UserList getUserNovel(@PathVariable("username") String username){
             UserList userList = new UserList();
-            userList.setUserUser((List<UserUser>)userUserRepo.findByUserName(username));
+            userList.setUserUser(userUserRepo.findByUserName(username));
             return userList;//zwróciło inczaj niż wcześniej
         }
 
@@ -104,7 +104,7 @@ public class UpdateDBh2 {
 
             Session session = sessionFactory.getCurrentSession();
 
-            UserUser user = (UserUser)session.get(UserUser.class,userUser.getID());//złe id ma być long
+            UserUser user = session.get(UserUser.class,userUser.getID());//złe id ma być long
 
             KatalogUpdate katalogUpdate1 = session.get(KatalogUpdate.class,katalogUpdate.getID());
 
@@ -124,9 +124,7 @@ public class UpdateDBh2 {
             KatalogUpdate katalogUpdate = katalogUpdateRepo.findOneByNovelID("the-second-coming-of-gluttony");
             KatalogUpdate katalogUpdate1 = session.get(KatalogUpdate.class,katalogUpdate.getID());
 
-            katalogUpdate1.zwróćSubskrybenci().forEach(user ->{
-                user.getSubNovel().remove(katalogUpdate1);
-            });
+            katalogUpdate1.zwróćSubskrybenci().forEach(user -> user.getSubNovel().remove(katalogUpdate1));
             session.delete(katalogUpdate1);//ty robisz bajzel
 
         }
@@ -145,9 +143,7 @@ public class UpdateDBh2 {
             UserUser userUser = userUserRepo.findOneByUserName("asd");
             UserUser user = session.get(UserUser.class,userUser.getID());
 
-            user.getSubNovel().forEach(novel ->{
-                novel.zwróćSubskrybenci().remove(user);
-            });
+            user.getSubNovel().forEach(novel -> novel.zwróćSubskrybenci().remove(user));
             session.delete(user);//ty robisz bajzel
         }
 

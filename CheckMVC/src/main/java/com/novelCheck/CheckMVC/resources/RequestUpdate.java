@@ -20,18 +20,28 @@ public class RequestUpdate {
     @Autowired
     private RestTemplate restTemplate;
 
-    public List<KatalogNovel> update(UserKatalog userKatalog){
+    private List<KatalogNovel> update(UserKatalog userKatalog){
 
         return userKatalog.getNovels().stream().map(novelka -> {//problem w konstukcji url//Już działa
             if (novelka.getStrona().equals("NovelUpdates") ){//getnovelID jest OK a getStrona jest null
                 NovelChap novelChap = restTemplate.getForObject( "http://NOVELUPD-SCRAPER/scrape/" +novelka.getNovelID(),NovelChap.class);
-                return new KatalogNovel(novelChap.getChapNum() , novelChap.getChapLink(),novelka.getNovelID());
+                if (novelChap != null) {
+                    return new KatalogNovel(novelChap.getChapNum() , novelChap.getChapLink(),novelka.getNovelID());
+                }
+                else {//TODO może zamienić na jakiś custom throws??
+                    return new KatalogNovel("ERROR" , "BŁĄD","NOVELCHAP");
+                }
             }
             else if (novelka.getStrona().equals("ScribbleHub")){
                 NovelChap novelChap = restTemplate.getForObject( "http://SCRIBBLEHUB-SCRAPER/scrape/" +novelka.getNovelID(),NovelChap.class);
                 String[] part = novelka.getNovelID().split("/");
                 String tytul = part[1];
-                return new KatalogNovel(novelChap.getChapNum() , novelChap.getChapLink(),tytul);
+                if (novelChap != null) {
+                    return new KatalogNovel(novelChap.getChapNum() , novelChap.getChapLink(),tytul);
+                }
+                else {//TODO może zamienić na jakiś custom throws??
+                    return new KatalogNovel("ERROR" , "BŁĄD","NOVELCHAP");
+                }
             }
             else {
                 return new KatalogNovel("ERROR" , "NIEPOPRAWNA","STRONA");
@@ -44,31 +54,59 @@ public class RequestUpdate {
     }
 
     @RequestMapping("/all")//zmienić na all
-    public ModelAndView getKatalog(){
-
-        UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getAll",UserKatalog.class);
+    public ModelAndView getKatalog() {
         ModelAndView modelAndView = new ModelAndView("all");
-        modelAndView.addObject("katalog",update(userKatalog));
+        UserKatalog userkatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getAll",UserKatalog.class);
+        try{
+            UserKatalog userKatalog = getKatalogHelp(userkatalog);
+            modelAndView.addObject("katalog",update(userKatalog));
+
+        } catch (NullUserKatalog nullUserKatalog) {
+            nullUserKatalog.printStackTrace();
+        }
 
         return modelAndView;//do jakiego html idzie
+    }
+    private UserKatalog getKatalogHelp(UserKatalog userkatalog) throws NullUserKatalog {
+
+        if (userkatalog == null) {
+            throw new NullUserKatalog("UserKatalog jest null");
+        }
+        else {
+            return userkatalog;
+        }
     }
 
 
     @GetMapping("/novelka")
     public ModelAndView getUserKatalog(@RequestParam("novelID") String novelID) {
         //System.out.println("http://UPDATE-DBH2/db/getNovel/"+novelID);
-        UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getNovel/"+novelID, UserKatalog.class);
+        UserKatalog userkatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getNovel/"+novelID, UserKatalog.class);
         ModelAndView modelAndView = new ModelAndView("novelka");
-        modelAndView.addObject("katalog",update(userKatalog));
+
+        try{
+            UserKatalog userKatalog = getKatalogHelp(userkatalog);
+            modelAndView.addObject("katalog",update(userKatalog));
+
+        } catch (NullUserKatalog nullUserKatalog) {
+            nullUserKatalog.printStackTrace();
+        }
 
         return modelAndView;//do jakiego html idzie
     }
     @GetMapping("/strona")
     public ModelAndView getStronaKatalog(@RequestParam(value = "strona") String strona) {
         //System.out.println("http://UPDATE-DBH2/db/getNovel/"+novelID);
-        UserKatalog userKatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getStrona/"+strona, UserKatalog.class);
+        UserKatalog userkatalog = restTemplate.getForObject("http://UPDATE-DBH2/db/getStrona/"+strona, UserKatalog.class);
         ModelAndView modelAndView = new ModelAndView("strona");
-        modelAndView.addObject("katalog",update(userKatalog));
+
+        try{
+            UserKatalog userKatalog = getKatalogHelp(userkatalog);
+            modelAndView.addObject("katalog",update(userKatalog));
+
+        } catch (NullUserKatalog nullUserKatalog) {
+            nullUserKatalog.printStackTrace();
+        }
 
         return modelAndView;//do jakiego html idzie
     }
@@ -89,42 +127,41 @@ public class RequestUpdate {
             return "index";
         }catch (JSONException e){
             System.out.println("Json error");
-            System.out.println(e);
             e.printStackTrace();
             return "index";
         }catch (Exception e){
             System.out.println("inny error");
-            System.out.println(e);
             e.printStackTrace();
             return "index";
         }
 
     }
     ////////////////////////////////// do odzyskiwania user z db
-    @GetMapping("/getUserNovel")
-    public ModelAndView getUserNovel(){//@RequestParam(value = "username")String username
+    @GetMapping("/getUserNovel")//TODO trzeba całe przebudować
+    public ModelAndView getUserNovel() throws NullUserList {//@RequestParam(value = "username")String username//TODO tutaj
+        ModelAndView modelAndView = new ModelAndView("getUserNovel");
         String username = "asd";
         UserList userList =restTemplate.getForObject("http://UPDATE-DBH2/db/getUserNovel/"+username,UserList.class);//tutaj problem
         // mam zwrapowane w liste
-        List<UserUser> users = userList.getUserUser().stream().map(novels ->
-        {
-            return new UserUser(novels.getUserName(),novels.getEmail(),novels.getSubNovel());
-        }).collect(Collectors.toList());//getSubNOvel zwraca mi objety a nie
+        List<UserUser> users;//getSubNOvel zwraca mi objety a nie
+        if (userList != null) {
+            users = userList.getUserUser().stream().map(novels ->
+                    new UserUser(novels.getUserName(),novels.getEmail(),novels.getSubNovel())).collect(Collectors.toList());
 
-        UserUser user = (UserUser) users.get(0);//działa ale dalej list zwraca obiekty
+            UserUser user = users.get(0);//działa ale dalej list zwraca obiekty
 
-        List<KatalogUpdate> kat2 = user.getSubNovel().stream().map(novels ->{
-            return new KatalogUpdate(novels.getNovelID(),novels.getStrona());
-        }).collect(Collectors.toList());
+            List<KatalogUpdate> kat2 = user.getSubNovel().stream().map(novels ->
+                    new KatalogUpdate(novels.getNovelID(),novels.getStrona())).collect(Collectors.toList());
 
-
-        ModelAndView modelAndView = new ModelAndView("getUserNovel");
-
-        modelAndView.addObject("katalog",users);
-        modelAndView.addObject("katalog2",kat2);
+            modelAndView.addObject("katalog",users);
+            modelAndView.addObject("katalog2",kat2);
+        }    else {
+            throw new NullUserList("UserKatalog jest null");
+        }
 
         return modelAndView;//do jakiego html idzie
     }
+
     //////////////////////////////////////////////do wysyłania mail
     @GetMapping("/sendMailUser")
     public String sendMailUser(Model model){
