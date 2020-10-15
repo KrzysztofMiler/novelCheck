@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 //TODO zobaczyć czy @Service ma sens
@@ -72,12 +71,6 @@ public class UpdateDBh2 {
             return userList;//zwróciło inczaj niż wcześniej
         }
 
-//        @GetMapping("/addUser")//temp
-//        public void addUser(){
-//            UserUser user = new UserUser("username","email");
-//
-//            userUserRepo.save(user);//powinno zapisać usera
-//        }
         @PostMapping(value = "/addUser",consumes = "application/json",produces = "application/json")
         public String addUser(@RequestBody UserUser userUser){
             userUserRepo.save(userUser);
@@ -160,10 +153,6 @@ public class UpdateDBh2 {
 
         @GetMapping("/mailGetAll")//TODO czy nie warto usunąć getAllUser????
         public UserList mailGetAll(){
-
-//            List<UserUser> userUser = new ArrayList<UserUser>();
-//            userUserRepo.findAll().forEach(user -> userUser.add(user));//trochę bardziej mi się podoba
-//            return userUser;//działa ale zwraca lisę obj może będą z tym poblemy
 
             UserList userList = new UserList();
             userList.setUserUser((List<UserUser>)userUserRepo.findAll());

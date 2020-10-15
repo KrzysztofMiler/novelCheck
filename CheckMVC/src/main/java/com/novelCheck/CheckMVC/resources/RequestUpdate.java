@@ -2,12 +2,8 @@ package com.novelCheck.CheckMVC.resources;
 
 import com.novelCheck.CheckMVC.models.*;
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -42,8 +38,7 @@ public class RequestUpdate {
             }
         }).collect(Collectors.toList());
     }
-
-    @RequestMapping("/index")
+    @RequestMapping({"/", "/index"})
     public String index(Model model){
         return "index";//aby do index an poczoątek wchodziło
     }
@@ -83,20 +78,27 @@ public class RequestUpdate {
         return "newNovelForm";
     }
 
-    @PostMapping("/newNovel")//saveNovel/{strona}/{novelID}
-    public String postNovelResult(@ModelAttribute("newNovelForm") KatalogUpdate katalogUpdate) throws JSONException {
-        //chce zpostować KatalogUpdate                              //nw czy potrzebne jest Model model
-        HttpHeaders headers = new HttpHeaders();
+    @PostMapping(value = "/newNovel",produces = "application/json")//saveNovel/{strona}/{novelID}
+    public String postNovelResult(@ModelAttribute("newNovelForm") KatalogUpdate katalogUpdate){//throws JSONException
+//        System.out.println(katalogUpdate.getNovelID());
+//        System.out.println(katalogUpdate.getStrona());
+        try{
+            DbUpdate dbUpdate = new DbUpdate();
+            String novelJsonResult = restTemplate.postForObject("http://UPDATE-DBH2/db/saveNovel"
+                    ,dbUpdate.DBpostNovelResult(katalogUpdate),String.class);
+            return "index";
+        }catch (JSONException e){
+            System.out.println("Json error");
+            System.out.println(e);
+            e.printStackTrace();
+            return "index";
+        }catch (Exception e){
+            System.out.println("inny error");
+            System.out.println(e);
+            e.printStackTrace();
+            return "index";
+        }
 
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        JSONObject novelJsonObject = new JSONObject();
-        novelJsonObject.put("novelID",katalogUpdate.getNovelID());//to jest katalogUpdate
-        novelJsonObject.put("strona",katalogUpdate.getStrona());
-
-        HttpEntity<String> req = new HttpEntity<String>(novelJsonObject.toString(),headers);
-        String novelJsonResult = restTemplate.postForObject("http://UPDATE-DBH2/db/saveNovel",req,String.class);
-        return "newNovel";
     }
     ////////////////////////////////// do odzyskiwania user z db
     @GetMapping("/getUserNovel")
@@ -129,35 +131,12 @@ public class RequestUpdate {
         model.addAttribute("sendMailUser",new UserUser());//nowy form na podstaiwe useruser
         return "sendMailUser";
     }
-    @PostMapping("/sendMailUser")//saveNovel/{strona}/{novelID}
-    public String sendMailUser() throws JSONException {//pewnie trzeba będie param pozmieniać
+    @PostMapping(value = "/sendMailUser",produces = "application/json")//saveNovel/{strona}/{novelID}
+    public String sendMailUser()  {
         //chce zpostować UserUser                              //nw czy potrzebne jest Model model
 
         String username = "asd";//TODO zmienić z temp val
-//        UserList userList =restTemplate.getForObject("http://UPDATE-DBH2/db/getUserNovel/"+username,UserList.class);//tutaj problem
-//        // mam zwrapowane w liste
-//        List<UserUser> users = userList.getUserUser().stream().map(novels ->
-//        {
-//            return new UserUser(novels.getUserName(),novels.getEmail(),novels.getSubNovel());
-//        }).collect(Collectors.toList());//getSubNOvel zwraca mi objety a nie
-//
-//        UserUser user = (UserUser) users.get(0);//działa ale dalej list zwraca obiekty
-//
-////        List<KatalogUpdate> kat2 = user.getSubNovel().stream().map(novels ->{
-////            return new KatalogUpdate(novels.getNovelID(),novels.getStrona());
-////        }).collect(Collectors.toList());
-////
-//        JSONObject userJsonObject = new JSONObject();
-//        userJsonObject.put("userName",user.getUserName());
-//        userJsonObject.put("email",user.getEmail());
-//        HttpHeaders headers = new HttpHeaders();
-//        //headers.setAccept(acceptableMediaTypes);
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//
-//
-//        HttpEntity<String> entity = new HttpEntity<String>(userJsonObject.toString(), headers);//TODO dodać dok url//normalnie był tu string.class
-//        //bez string nie działa
+
         System.out.println("http://NOVELMAIL/sendMailUser/"+username);
         String novelJsonResult = restTemplate.getForObject("http://NOVELMAIL/sendMailUser/"+username,String.class);//tutaj bugi
         return "index";//                                   bez dok adresu po / działa
@@ -170,18 +149,23 @@ public class RequestUpdate {
         return "newUserForm";
     }
     @PostMapping("/addUser")//temp
-    public String AddUserFormResult(@ModelAttribute("newUserForm") UserUser userUser) throws JSONException {
-        HttpHeaders headers = new HttpHeaders();
-
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        JSONObject novelJsonObject = new JSONObject();
-        novelJsonObject.put("userName",userUser.getUserName());//to jest katalogUpdate
-        novelJsonObject.put("email",userUser.getEmail());
-
-        HttpEntity<String> req = new HttpEntity<String>(novelJsonObject.toString(),headers);
-        String novelJsonResult = restTemplate.postForObject("http://UPDATE-DBH2/db/addUser",req,String.class);
-        return "newUser";
+    public String AddUserFormResult(@ModelAttribute("newUserForm") UserUser userUser) {
+        try{
+            DbUpdate dbUpdate = new DbUpdate();
+            String novelJsonResult = restTemplate.postForObject("http://UPDATE-DBH2/db/addUser"
+                    ,dbUpdate.DVAddUserFormResult(userUser),String.class);
+            return "newUser";
+        }catch (JSONException e){
+            System.out.println("Json error");
+            System.out.println(e);
+            e.printStackTrace();
+            return "index";
+        }catch (Exception e){
+            System.out.println("inny error");
+            System.out.println(e);
+            e.printStackTrace();
+            return "index";
+        }
     }
 
     //dodawanie novelki do user
@@ -193,20 +177,25 @@ public class RequestUpdate {
         return "newNoveltoUserForm";
     }
     @PostMapping("/subNoveltoUser")//temp
-    public String NoveltoUserFormResult(@ModelAttribute("Wrapper") SubUserToNovelWrapper wrapper) throws JSONException {
-        HttpHeaders headers = new HttpHeaders();
+    public String NoveltoUserFormResult(@ModelAttribute("Wrapper") SubUserToNovelWrapper wrapper)  {
 
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        try{
+            DbUpdate dbUpdate = new DbUpdate();
+            String novelJsonResult = restTemplate.postForObject("http://UPDATE-DBH2/db/subNoveltoUser"
+                    ,dbUpdate.SubUserToNovelWrapper(wrapper),String.class);
+            return "newUser";
+        }catch (JSONException e){
+            System.out.println("Json error");
+            System.out.println(e);
+            e.printStackTrace();
+            return "index";
+        }catch (Exception e){
+            System.out.println("inny error");
+            System.out.println(e);
+            e.printStackTrace();
+            return "index";
+        }
 
-        JSONObject novelJsonObject = new JSONObject();
-        novelJsonObject.put("userName",wrapper.getUserName());//to jest katalogUpdate
-        novelJsonObject.put("novelID",wrapper.getNovelID());
-
-        HttpEntity<String> req = new HttpEntity<String>(novelJsonObject.toString(),headers);
-        String novelJsonResult = restTemplate.postForObject("http://UPDATE-DBH2/db/subNoveltoUser",req,String.class);
-
-
-        return "index";//z jakiegoś powodu nie widzi newNoveltoUser
     }
     @GetMapping("/updateUserMail")
     public String updateUserMail(Model model){
@@ -231,20 +220,24 @@ public class RequestUpdate {
         return "delSubNovel";
     }
     @PostMapping(value = "/delSubNovel")
-    public String delSubNovelPost(@ModelAttribute("Wrapper") SubUserToNovelWrapper wrapper) throws JSONException {
-        HttpHeaders headers = new HttpHeaders();
+    public String delSubNovelPost(@ModelAttribute("Wrapper") SubUserToNovelWrapper wrapper)  {
 
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        JSONObject novelJsonObject = new JSONObject();
-        novelJsonObject.put("userName",wrapper.getUserName());//to jest katalogUpdate
-        novelJsonObject.put("novelID",wrapper.getNovelID());
-
-        HttpEntity<String> req = new HttpEntity<String>(novelJsonObject.toString(),headers);
-        String novelJsonResult = restTemplate.postForObject("http://UPDATE-DBH2/db/delSubNovel",req,String.class);
-
-
-        return "index";//z jakiegoś powodu nie widzi newNoveltoUser
+        try{
+            DbUpdate dbUpdate = new DbUpdate();
+            String novelJsonResult = restTemplate.postForObject("http://UPDATE-DBH2/db/delSubNovel"
+                    ,dbUpdate.SubUserToNovelWrapper(wrapper),String.class);
+            return "newUser";
+        }catch (JSONException e){
+            System.out.println("Json error");
+            System.out.println(e);
+            e.printStackTrace();
+            return "index";
+        }catch (Exception e){
+            System.out.println("inny error");
+            System.out.println(e);
+            e.printStackTrace();
+            return "index";
+        }
     }
 
 }
